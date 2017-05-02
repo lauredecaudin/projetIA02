@@ -16,3 +16,12 @@
 
 % default call
 get_moves([[[1,0],[2,0]],[[0,0],[1,0]],[[0,1],[0,0]],[[0,0],[0,1]]], Gamestate, Board).
+
+inf(X,Y) :- X<Y.
+inf(rabbit, cat).
+inf(cat, dog).
+inf(dog, horse).
+inf(horse, camel).
+inf(camel, elephant).
+
+
