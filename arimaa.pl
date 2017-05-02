@@ -17,11 +17,18 @@
 % default call
 get_moves([[[1,0],[2,0]],[[0,0],[1,0]],[[0,1],[0,0]],[[0,0],[0,1]]], Gamestate, Board).
 
-inf(X,Y) :- X<Y.
-inf(rabbit, cat).
-inf(cat, dog).
-inf(dog, horse).
-inf(horse, camel).
-inf(camel, elephant).
+
+inf(X,Y) :- inf1(X,Y).
+inf(X,Y) :- inf1(X,Z), inf(Z,Y).
+
+inf1(rabbit, cat).
+inf1(cat, dog).
+inf1(dog, horse).
+inf1(horse, camel).
+inf1(camel, elephant).
+
+move([[],[]], L, L).
+modèle : 
+move([X|L1], L2,[X|X3]) :- move(L1,L2,L3).
 
 
