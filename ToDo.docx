@@ -1,0 +1,10 @@
+- Inférieur : FAIT
+- Autoriser entre 1 et 4 mouvements
+- Implémenter Board 
+- Implémenter le prédicat Trap
+- Implémenter Gamestate (Frozen) 
+- Implémenter Get_moves
+- Associer Player à { silver,gold }
+- implémenter Move
+
+player(x) :- player(Silver) | player(Gold).
