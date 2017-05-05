@@ -17,35 +17,31 @@
 % default call
 get_moves([[[1,0],[2,0]],[[0,0],[1,0]],[[0,1],[0,0]],[[0,0],[0,1]]], Gamestate, Board).
 
-
+% predicat inferiorite
 inf(X,Y) :- inf1(X,Y).
 inf(X,Y) :- inf1(X,Z), inf(Z,Y).
-
 inf1(rabbit, cat).
 inf1(cat, dog).
 inf1(dog, horse).
 inf1(horse, camel).
 inf1(camel, elephant).
 
+%faire predicat strength je pense, un peu de la même maniere, tentative :
+strength(rabbit, 1).
+%non en fait a part attribuer strength(cat, 2). strength(dog, 3). etc je vois pas
+
+
 move([[],[]], L, L).
 modèle : 
 move([X|L1], L2,[X|X3]) :- move(L1,L2,L3).
 
 /*Petit prédicat pour trouver le joueur adverse*/
-oppPlayer(silver, gold).
-oppPlayer(gold, silver).
+oppSide(silver, gold).
+oppSide(gold, silver).
 
 
-/*Renvoie la couleur d'un pion à partir de son type*/
-/*modifier les appelations des pions, mais j'ai trouvé cette façon de faire sur le Git de P16 */
-findColour(IdPion, silver) :- element(IdPion, [kr, r1, r2, r3, r4, r5]), !.
-findColour(IdPion, gold) :- element(IdPion, [ko, o1, o2, o3, o4, o5]), !.
-
-
-
-Une pièce est définie par un tuple pion(IdPion, Col, Lin, Etat), où :
-
-    IdPion est l'identifiant unique de la pièce (rg0, rg1, ... pour les lapins dorés, cg0, cg1... pour les camels dorés etc; rs0, rs1,..., ds0, hs0, ... pour les silvers).
+%Une pièce est définie par un tuple piece(type, side, strength,Col, Lin, Etat), où :
+    Après en soit "strength" est déterminé par "type" donc devient "inutile"
     (Col, Lin) est la position de la pièce sur le plateau. (plateau de 8x8)
     Etat détermine si la pièce est en jeu, si elle est en jeu et est frozen, ou si elle est hors jeu (dans un piège); Etat peut prendre les valeurs 'in', 'frozen' ou 'out'.
     
