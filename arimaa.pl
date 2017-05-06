@@ -17,6 +17,12 @@
 % default call
 get_moves([[[1,0],[2,0]],[[0,0],[1,0]],[[0,1],[0,0]],[[0,0],[0,1]]], Gamestate, Board).
 
+
+/* Faut lire le README du Git de P16, ya pleins de prédicats utiles dont on pourrait peut être s'inspirer*/ 
+https://github.com/vincebhx/IA02-Khan/blob/master/README.md
+
+
+
 % predicat inferiorite
 inf(X,Y) :- inf1(X,Y).
 inf(X,Y) :- inf1(X,Z), inf(Z,Y).
@@ -29,6 +35,16 @@ inf1(camel, elephant).
 %faire predicat strength je pense, un peu de la même maniere, tentative :
 strength(rabbit, 1).
 %non en fait a part attribuer strength(cat, 2). strength(dog, 3). etc je vois pas
+strength(rabbit, 1).
+strength(cat, 2).
+strength(dog, 3).
+strength(horse, 4).
+strength(camel, 5).
+strength(elephant, 6).
+
+
+%predicat type
+type(X) :- type(rabbit) | type(cat) | type(dog) | type(horse) | type(camel) | type(elephant).
 
 
 move([[],[]], L, L).
@@ -39,13 +55,39 @@ move([X|L1], L2,[X|X3]) :- move(L1,L2,L3).
 oppSide(silver, gold).
 oppSide(gold, silver).
 
+%predicat qui donne la couleur de notre piece ?
+side(X) :- silver | gold.
+side(X) :- oppSide(X,_).  
 
-%Une pièce est définie par un tuple piece(type, side, strength,Col, Lin, Etat), où :
+
+%Une pièce est définie par un tuple piece(type, side, (strength),Col, Lin, Etat), où :
     Après en soit "strength" est déterminé par "type" donc devient "inutile"
     (Col, Lin) est la position de la pièce sur le plateau. (plateau de 8x8)
     Etat détermine si la pièce est en jeu, si elle est en jeu et est frozen, ou si elle est hors jeu (dans un piège); Etat peut prendre les valeurs 'in', 'frozen' ou 'out'.
+
+%predicat trap
+trap(X,Y) :- piece(X,Y,2,2,_) | piece(X,Y,6,2,_) | piece(X,Y,6,2,_) | piece(X,Y,6,6,_).  
+(ici X est le type, et Y side)
+
+%ajout au tableau des capturés
+captured([T|Q],X,Y) :- trap(X,Y), captured([T|Q]). 
+
+%commentaires pour les déplacements
+Pour les pièces 4 directions possibles : forward, backward, left and right
+rabbits : peuvent pas backward
+Pas possible de faire un tour où tout revient à la même position que au début du tour
+Entre 1 et 4 steps par tour
+push/pull = 2 steps : by a stronger to a weaker opponent's piece
+* A stronger piece can also freeze any opponent's piece that is weaker than it. 
+A piece which is next to an opponent's stronger piece is considered to be frozen and cannot move on its own; 
+though it can be pushed or pulled by opponents stronger pieces. 
+However if there is a friendly piece next to it the piece is unfrozen and is free to move. 
+* Idem pour les traps : si il y a une piece amie à côté alors ne tombe pas dans le trou
+
+%architecture :
+move = get_move(board, state);
+
+move: 
+    steps: array of 4 move
+    move: from (row, col), piece, to (row, col)  (ex : [2,3, rabbit, gold,3,3])
     
-/* Faut lire le README du Git de P16, ya pleins de prédicats utiles */ 
-https://github.com/vincebhx/IA02-Khan/blob/master/README.md
-
-
