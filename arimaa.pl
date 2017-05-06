@@ -59,6 +59,8 @@ oppSide(gold, silver).
 side(X) :- silver | gold.
 side(X) :- oppSide(X,_).  
 
+%predicat Player qu'on avait fait en TD, pour moi c'est pareil que side
+player(X) :- player(silver) | player(gold). 
 
 %Une pièce est définie par un tuple piece(type, side, (strength),Col, Lin, Etat), où :
     Après en soit "strength" est déterminé par "type" donc devient "inutile"
