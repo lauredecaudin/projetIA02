@@ -110,7 +110,15 @@ move:
  remainSteps(N) :-  N>0, M is N-1, remainSteps(M).
  
 %predicat board
-board([[T|Q],[L,C,X,Y]]) :- board([T|Q]), piece(X,Y,L,C,_), L<=7, L>=0, C<=7, L>=0, not trap(X,Y).  //est ce qu'il faut qu'on se démerde pour vérifier qu'aucune piece n'est présente à la même position ?
+board([[T|Q],[L,C,X,Y]]) :- board([T|Q]), piece(X,Y,L,C,in|frozen), L<=7, L>=0, C<=7, L>=0, not trap(X,Y).  //est ce qu'il faut qu'on se démerde pour vérifier qu'aucune piece n'est présente à la même position ?
+ 
+ 
+%predicat possMove, en supposant silver en haut et gold en bas
+%on ne peut pas bouger les out ou silver
+%cas special des lapins qui ne peuvent pas aller backward
+possMove(rabbit,silver,[[[L,C],[L+1, C]],[[L,C],[L,C+1]],[[L,C],[L,C-1]]]) :- piece(rabbit,silver,L,C,in), not board([[_],[L+1,C]],_,_), not board([[_],[L,C+1]],_,_), not board([[_],[L,C-1]],_,_).
+possMove(rabbit,gold,[[[L,C],[L-1, C]],[[L,C],[L,C+1]],[[L,C],[L,C-1]]]) :- piece(rabbit,gold,L,C,in), not board([[_],[L-1,C]],_,_), not board([[_],[L,C+1]],_,_), not board([[_],[L,C-1]],_,_).
+possMove(X,Y,[[[L,C],[L-1, C]],[[L,C],[L,C+1]],[[L,C],[L,C-1]],[[L,C],[L+1,C]]]) ;- piece(X,Y,L,C,in), (X!=rabbit), not board([[_],[L-1,C]],_,_), not board([[_],[L,C+1]],_,_), not board([[_],[L,C-1]],_,_), not board([[_],[L+1,C]],_,_). 
  
  
 %predicat Get_Move, on ajoute un move au tableau
