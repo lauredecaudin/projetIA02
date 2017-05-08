@@ -100,11 +100,11 @@ move:
     
     
  %predicat gamestate
- gamestate(X, Y, Z, U) :- side(X), captured(Y), frozen(Z), remainSteps(U).
+ gamestate(X, Y, Z, U) :- side(X), captured(Y), frozen(Z), remainSteps(U), U<=4.
  
  %predicat remainSteps  //pas sure du tout
- remainSteps(4).
- remainSteps(N) :- M is N-1, M>=0, remainSteps(M).
+ remainSteps(0).
+ remainSteps(N) :-  N>0, M is N-1, remainSteps(M).
  
  %predicat board
  
