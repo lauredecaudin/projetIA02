@@ -56,16 +56,17 @@ oppSide(silver, gold).
 oppSide(gold, silver).
 
 %predicat qui donne la couleur de notre piece ?
-side(X) :- silver | gold.
+side(X) :- side(silver) | side(gold).
 side(X) :- oppSide(X,_).  
 
-%predicat Player qu'on avait fait en TD, pour moi c'est pareil que side
-player(X) :- player(silver) | player(gold). 
-
-%Une pièce est définie par un tuple piece(type, side, (strength),Col, Lin, Etat), où :
+%Une pièce est définie par un tuple piece(type,side,Lin,Col,Etat), où :
     Après en soit "strength" est déterminé par "type" donc devient "inutile"
     (Col, Lin) est la position de la pièce sur le plateau. (plateau de 8x8)
     Etat détermine si la pièce est en jeu, si elle est en jeu et est frozen, ou si elle est hors jeu (dans un piège); Etat peut prendre les valeurs 'in', 'frozen' ou 'out'.
+
+etat(X) :- etat(in) | etat(frozen) | etat(out).
+position(X,Y).
+piece(X,Y,L,C,E):-type(X),side(Y),position(L,C),etat(E).
 
 %predicat trap
 trap(X,Y) :- piece(X,Y,2,2,_) | piece(X,Y,6,2,_) | piece(X,Y,6,2,_) | piece(X,Y,6,6,_).  
