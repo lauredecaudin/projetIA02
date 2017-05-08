@@ -2,17 +2,16 @@
 --> plutôt implémenter strenght ? (rabbit=1, cat=2...)  //FAIT
 - implementer type(rabbit, cat, dog, horse, camel, elephant)  //FAIT
 - Implémenter le prédicat Trap (2,2)(2,6)(6,2)(6,6)  //FAIT
+- implémenter side(gold, silver)  //FAIT
+- Implémenter Gamestate  //FAIT ?
+- Autoriser entre 1 et 4 mouvements //FAIT AVEC remainSteps
 
-- Associer Player à { silver,gold }  //NOTE SURE
-- implémenter side(gold, silver)  //HEU.. NOT SURE
-
-- Implémenter Gamestate (Frozen) 
 - Implémenter Get_moves(Moves, gamestate, board)
 - implémenter Move
 - implementer un predicat qui donne pour une piece en jeu ses différents mouvements possibles (en fonction de son type, des autres pièces du jeu, de si elle est frozen ou pas, etc)
 - implémenter push/pull ?
-- Autoriser entre 1 et 4 mouvements
 - Implémenter Board 
+- Implémenter frozen
 
 
 
