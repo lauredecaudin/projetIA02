@@ -21,6 +21,9 @@ get_moves([[[1,0],[2,0]],[[0,0],[1,0]],[[0,1],[0,0]],[[0,0],[0,1]]], Gamestate, 
 /* Faut lire le README du Git de P16, ya pleins de prédicats utiles dont on pourrait peut être s'inspirer*/ 
 https://github.com/vincebhx/IA02-Khan/blob/master/README.md
 
+/*Git du projet*/
+/* https://github.com/rlacazel/Prolog-Arimaa  */
+
 
 
 % predicat inferiorite
@@ -69,7 +72,7 @@ position(X,Y).
 piece(X,Y,L,C,E):-type(X),side(Y),position(L,C),etat(E).
 
 %predicat trap
-trap(X,Y) :- piece(X,Y,2,2,_) | piece(X,Y,6,2,_) | piece(X,Y,6,2,_) | piece(X,Y,6,6,_).  
+trap(X,Y) :- piece(X,Y,2,2,_) | piece(X,Y,5,2,_) | piece(X,Y,2,5,_) | piece(X,Y,5,5,_).  
 (ici X est le type, et Y side)
 
 %ajout au tableau des capturés
@@ -106,6 +109,12 @@ move:
  remainSteps(0).
  remainSteps(N) :-  N>0, M is N-1, remainSteps(M).
  
- %predicat board
+%predicat board
+board([[T|Q],[L,C,X,Y]]) :- board([T|Q]), piece(X,Y,L,C,_), L<=7, L>=0, C<=7, L>=0, not trap(X,Y).  //est ce qu'il faut qu'on se démerde pour vérifier qu'aucune piece n'est présente à la même position ?
  
-    
+ 
+%predicat Get_Move, on ajoute un move au tableau
+get_moves([[T|Q],[[L7,C7],[L8,C8]]], Gamestate, Board) :- get_moves([T|Q],Gamestate, Board), move([L1,C1],[L2,C2]) | pas de move. (comment représenter ?)
+
+
+
