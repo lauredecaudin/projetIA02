@@ -6,12 +6,13 @@
 - Implémenter Gamestate  //FAIT ?
 - Autoriser entre 1 et 4 mouvements //FAIT AVEC remainSteps
 
-- Implémenter Get_moves(Moves, gamestate, board)
-- implémenter Move
-- implementer un predicat qui donne pour une piece en jeu ses différents mouvements possibles (en fonction de son type, des autres pièces du jeu, de si elle est frozen ou pas, etc)
-- implémenter push/pull ?
-- Implémenter Board 
-- Implémenter frozen
+- Implémenter Get_moves(Moves, gamestate, board) //C
+- implémenter Move  //L
+- implementer un predicat qui donne pour une piece en jeu ses différents mouvements possibles
+(en fonction de son type, des autres pièces du jeu, de si elle est frozen ou pas, etc)  //C
+- implémenter push/pull ? //L
+- Implémenter Board //C
+- Implémenter frozen  //L
 
 
 
