@@ -73,7 +73,11 @@ trap(X,Y) :- piece(X,Y,2,2,_) | piece(X,Y,6,2,_) | piece(X,Y,6,2,_) | piece(X,Y,
 (ici X est le type, et Y side)
 
 %ajout au tableau des capturés
-captured([T|Q],X,Y) :- trap(X,Y), captured([T|Q]). 
+captured([[T|Q],X,Y]) :- trap(X,Y), captured([T|Q]). 
+
+%a faire plus tard
+%ajout au tableau des frozen
+frozen([[T|Q],X,Y]) :- ?(X,Y), frozen([T|Q]).
 
 %commentaires pour les déplacements
 Pour les pièces 4 directions possibles : forward, backward, left and right
@@ -93,4 +97,15 @@ move = get_move(board, state);
 move: 
     steps: array of 4 move
     move: from (row, col), piece, to (row, col)  (ex : [2,3, rabbit, gold,3,3])
+    
+    
+ %predicat gamestate
+ gamestate(X, Y, Z, U) :- side(X), captured(Y), frozen(Z), remainSteps(U).
+ 
+ %predicat remainSteps  //pas sure du tout
+ remainSteps(4).
+ remainSteps(N) :- M is N-1, M>=0, remainSteps(M).
+ 
+ %predicat board
+ 
     
