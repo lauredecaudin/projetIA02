@@ -10,7 +10,7 @@
 - implémenter Move, faire attention à limiter le nb à 4 et à permettre que les mouvements possibles (celui d'en dessous)  //L
 - implementer un predicat qui donne pour une piece en jeu ses différents mouvements possibles
 (en fonction de son type, des autres pièces du jeu, de si elle est frozen ou pas, etc)  //C   OK
-- implémenter push/pull ? //L
+- implémenter push/pull ? //L  OK
 - Implémenter Board //C   OK
 - Implémenter frozen  //L OK
 
