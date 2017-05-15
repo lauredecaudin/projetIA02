@@ -200,8 +200,11 @@ piece(X,gold,L,C,E) :- possPush(X,gold,W,N,L,C,gauche).
 %frozen
 frozen(X,W) :- aCote(X,Y), inf(X,Y), piece(X,W,_,_,in), piece(Y,Z,_,_,in), W \== Z, not (aCote(X,A), piece(A,W,_,_,in)). 
 
-possPull(X,silver,W,N,L,C) :- N>2,piece(W,gold,L,C,in),piece(X,silver,L-1,C,in),free(L-2,C),inf(W,X). 
-possPull(X,gold,W,N,L,C) :- N>2,piece(W,silver,L,C,in),piece(X,gold,L+1,C,in),free(L+2,C),inf(W,X). 
+possPull(X,silver,W,N,L,C) :- N>=2,piece(W,gold,L,C,in),piece(X,silver,L-1,C,in),free(L-2,C), L-2>=0,inf(W,X). 
+possPull(X,gold,W,N,L,C) :- N>=2,piece(W,silver,L,C,in),piece(X,gold,L+1,C,in),free(L+2,C), L+2<=7,inf(W,X).
+%pourquoi ne pas faire selon les colonnes aussi ? :
+possPull(X,gold,W,N,L,C) :- N>=2,piece(W,silver,L,C,in),piece(X,gold,L,C+1,in),free(L,C+2), C+2<=7,inf(W,X).
+possPull(X,gold,W,N,L,C) :- N>=2,piece(W,silver,L,C,in),piece(X,gold,L,C-1,in),free(L,C-2), C-2>=0,inf(W,X).
 
 %predicat Get_Move, on ajoute un move au tableau :
 get_moves(_, [_,_,_,0],_ ):- !.  %si plus de step possible, on arrête
