@@ -70,6 +70,7 @@ side(X) :- oppSide(X,_).
 etat(X) :- etat(in) | etat(frozen) | etat(out).
 position(X,Y).
 piece(X,Y,L,C,E):-type(X),side(Y),position(L,C),etat(E).
+diffType(X,Y) :- piece(X,A,_,_,_),piece(Y,B,_,_,_),A \== B. 
 
 %predicat trap
 trap(X,Y) :- piece(X,Y,2,2,_) | piece(X,Y,5,2,_) | piece(X,Y,2,5,_) | piece(X,Y,5,5,_).  
@@ -80,7 +81,7 @@ captured([[T|Q],X,Y]) :- trap(X,Y), captured([T|Q]).
 
 %a faire plus tard
 %ajout au tableau des frozen
-frozen([[T|Q],X,Y]) :- ?(X,Y), frozen([T|Q]).
+frozenTab([[T|Q],X,Y]) :- piece(X,Y,_,_,frozen), frozenTab([T|Q]).
 
 %commentaires pour les déplacements
 %Pour les pièces 4 directions possibles : forward, backward, left and right
@@ -114,10 +115,7 @@ concat([],L,L).
 concat([X|L1], L2,[X|L3]) :- concat(L1,L2,L3).
 
 %prédicat Free (place libre) 
-notFree(X,Y) :- piece(_,_,X,Y,_).   
-%j'aurais plutot fait Free(X,Y) :- not(piece(_,_,X,Y,_), car pour le coup c'est pas le fait de mettre "not" dans le nom du prédicat qui
-%marche, mais c'est de faire un prédicat p(X,Y) et d'appeler not(p(X,Y)) dans les règles lors de la déclaration d'un autre prédicat ;)
-
+notFree(X,Y) :- piece(_,_,X,Y,_).
 %diapo101 du poly
 
 %predicat board
@@ -134,10 +132,48 @@ possMove(rabbit,silver,[[[L,C],[L+1, C]],[[L,C],[L,C+1]],[[L,C],[L,C-1]]]) :- pi
 possMove(rabbit,gold,[[[L,C],[L-1, C]],[[L,C],[L,C+1]],[[L,C],[L,C-1]]]) :- piece(rabbit,gold,L,C,in), not board([[_],[L-1,C]],_,_), not board([[_],[L,C+1]],_,_), not board([[_],[L,C-1]],_,_).
 possMove(X,Y,[[[L,C],[L-1, C]],[[L,C],[L,C+1]],[[L,C],[L,C-1]],[[L,C],[L+1,C]]]) ;- piece(X,Y,L,C,in), X \== rabbit , not board([[_],[L-1,C]],_,_), not board([[_],[L,C+1]],_,_), not board([[_],[L,C-1]],_,_), not board([[_],[L+1,C]],_,_). 
 
-%Y : pièce poussant, X : type en cours, W : pièce poussée, N : nombre de coup restant, 
-possPush(X,silver,W,N,L,C) :- free(L+1,C),piece(W,gold,L,C,in),piece(X,silver,L+1,C,in)|piece(X,silver,L-1,C,in)|piece(X,silver,L,C+1,in)|piece(X,silver,L-1,C,in),inf(W,X),remainSteps(N). 
-possPush(X,gold,W,N,L,C) :- free(L-1,C),piece(W,gold,L,C,in),piece(X,silver,L+1,C,in)|piece(X,silver,L-1,C,in)|piece(X,silver,L,C+1,in)|piece(X,silver,L-1,C,in),inf(W,X),remainSteps(N).
- 
+aCote1(X,Y) :- piece(X,_,L,C,_),piece(Y,_,L+1,C,_)|piece(Y,_,L-1,C,_)|piece(Y,_,L,C-1,_)|piece(Y,_,L,C+1,_). 
+aCote(X,Y) :- aCote1(X,Y). 
+aCote(X,Y) :- aCote1(Y,X). 
+
+%sens du mouvement demandé
+sens(S) :- sens(gauche) | sens(droite) | sens(bas) | sens(haut). 
+
+% X : pièce poussant, W : pièce poussée, N : nombre de coup restant, 
+possPush(X,silver,W,N,L,C,S) :- N>2,(free(L+1,C),sens(bas))|(free(L,C+1),sens(droite))|(free(L,C-1),sens(gauche))|(free(L-1,C),sens(haut)),piece(W,gold,L,C,in),aCote(X,W),inf(W,X). 
+possPush(X,gold,W,N,L,C,S) :- N>2,(free(L+1,C),sens(bas))|(free(L,C+1),sens(droite))|(free(L,C-1),sens(gauche))|(free(L-1,C),sens(haut)),piece(W,silver,L,C,in),aCote(X,W),inf(W,X).
+
+%Comment appliquer le mouvement ? Vraiment pas sure de ce qui suit, parce qu'on ne demande pas si l'utilisateur VEUT déplacer la pièce
+%comment changer l'état ?
+piece(W,gold,L2,C2,E) :- possPush(X,silver,W,N,L,C,bas), C2 is C, L2 is L+1. 
+piece(X,silver,L,C,E) :- possPush(X,silver,W,N,L,C,bas). 
+
+piece(W,gold,L2,C2,E) :- possPush(X,silver,W,N,L,C,haut), C2 is C, L2 is L-1. 
+piece(X,silver,L,C,E) :- possPush(X,silver,W,N,L,C,haut). 
+
+piece(W,gold,L2,C2,E) :- possPush(X,silver,W,N,L,C,droite), C2 is C+1, L2 is L. 
+piece(X,silver,L,C,E) :- possPush(X,silver,W,N,L,C,droite). 
+
+piece(W,gold,L2,C2,E) :- possPush(X,silver,W,N,L,C,gauche), C2 is C-1, L2 is L. 
+piece(X,silver,L,C,E) :- possPush(X,silver,W,N,L,C,gauche). 
+
+piece(W,silver,L2,C2,E) :- possPush(X,gold,W,N,L,C,bas), C2 is C, L2 is L+1. 
+piece(X,gold,L,C,E) :- possPush(X,gold,W,N,L,C,bas). 
+
+piece(W,silver,L2,C2,E) :- possPush(X,gold,W,N,L,C,haut), C2 is C, L2 is L-1. 
+piece(X,gold,L,C,E) :- possPush(X,gold,W,N,L,C,haut). 
+
+piece(W,silver,L2,C2,E) :- possPush(X,gold,W,N,L,C,droite), C2 is C+1, L2 is L. 
+piece(X,gold,L,C,E) :- possPush(X,gold,W,N,L,C,droite). 
+
+piece(W,silver,L2,C2,E) :- possPush(X,gold,W,N,L,C,gauche), C2 is C-1, L2 is L. 
+piece(X,gold,L,C,E) :- possPush(X,gold,W,N,L,C,gauche). 
+
+frozen(X) :- aCote(X,Y), inf(X,Y), piece(X,W,_,_,in), piece(Y,Z,_,_,in), W \== Z, not (aCote(X,A), piece(A,W,_,_,in)). 
+
+possPull(X,silver,W,N,L,C) :- N>2,piece(W,gold,L,C,in),piece(X,silver,L-1,C,in),free(L-2,C),inf(W,X). 
+possPull(X,gold,W,N,L,C) :- N>2,piece(W,silver,L,C,in),piece(X,gold,L+1,C,in),free(L+2,C),inf(W,X). 
+
 %predicat Get_Move, on ajoute un move au tableau
 get_moves([[T|Q],[[L1,C1],[L2,C2]]], Gamestate, Board) :- get_moves([T|Q],Gamestate, Board), move([L1,C1],[L2,C2]).
 
