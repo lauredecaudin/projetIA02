@@ -140,31 +140,32 @@ possMove(rabbit,gold,[[[L,C],[L-1, C]],[[L,C],[L,C+1]],[[L,C],[L,C-1]]]) :- piec
 possMove(X,Y,[[[L,C],[L-1, C]],[[L,C],[L,C+1]],[[L,C],[L,C-1]],[[L,C],[L+1,C]]]) ;- piece(X,Y,L,C,in), X \== rabbit , not board([[_],[L-1,C]],_,_), not board([[_],[L,C+1]],_,_), not board([[_],[L,C-1]],_,_), not board([[_],[L+1,C]],_,_). 
 
 aCote1(X,Y) :- piece(X,_,L,C,_),piece(Y,_,L+1,C,_)|piece(Y,_,L-1,C,_)|piece(Y,_,L,C-1,_)|piece(Y,_,L,C+1,_). 
-%il faut peut être aussi rajouter les diagonales non ?
+
+%new version :
 aCote(X,Y) :- aCote1(X,Y). 
 aCote(X,Y) :- aCote1(Y,X). 
-%Pourquoi avoir utilisé aCote1 au lieu de juste faire :
-aCote(X,Y) :- aCote(Y,X).
 %cas dans les angles
-aCote([X,Y],[U,V]) :- piece(X,Y, 0,0 ,_), piece(U,V,1,1,_)|piece(U,V,0,1,_),!.
-aCote([X,Y],[U,V]) :- piece(X,Y, 0,7 ,_), piece(U,V,0,6,_)|piece(U,V,1,7,_),!.
-aCote([X,Y],[U,V]) :- piece(X,Y, 7,7 ,_), piece(U,V,7,6,_)|piece(U,V,6,7,_), !.
-aCote([X,Y],[U,V]) :- piece(X,Y, 7,0 ,_), piece(U,V,7,1,_)|piece(U,V,6,0,_),!.
+aCote1([X,Y],[U,V]) :- piece(X,Y, 0,0 ,_), piece(U,V,1,1,_)|piece(U,V,0,1,_),!.
+aCote1([X,Y],[U,V]) :- piece(X,Y, 0,7 ,_), piece(U,V,0,6,_)|piece(U,V,1,7,_),!.
+aCote1([X,Y],[U,V]) :- piece(X,Y, 7,7 ,_), piece(U,V,7,6,_)|piece(U,V,6,7,_), !.
+aCote1([X,Y],[U,V]) :- piece(X,Y, 7,0 ,_), piece(U,V,7,1,_)|piece(U,V,6,0,_),!.
 %cas 1ere/derniere ligne/colonne
-aCote([X,Y],[U,V]) :- piece(X,Y, 0,C ,_), piece(U,V,0,C-1,_)|piece(U,V,0,C+1,_)|piece(U,V,1,C,_),!.
-aCote([X,Y],[U,V]) :- piece(X,Y, 7,C ,_), piece(U,V,7,C-1,_)|piece(U,V,7,C+1,_)|piece(U,V,6,C,_),!.
-aCote([X,Y],[U,V]) :- piece(X,Y, L,0 ,_), piece(U,V,L-1,0,_)|piece(U,V,L+1,0,_)|piece(U,V,L,1,_),!.
-aCote([X,Y],[U,V]) :- piece(X,Y, L,7 ,_), piece(U,V,L-1,7,_)|piece(U,V,L+1,7,_)|piece(U,V,L,6,_),!.
+aCote1([X,Y],[U,V]) :- piece(X,Y, 0,C ,_), piece(U,V,0,C-1,_)|piece(U,V,0,C+1,_)|piece(U,V,1,C,_),!.
+aCote1([X,Y],[U,V]) :- piece(X,Y, 7,C ,_), piece(U,V,7,C-1,_)|piece(U,V,7,C+1,_)|piece(U,V,6,C,_),!.
+aCote1([X,Y],[U,V]) :- piece(X,Y, L,0 ,_), piece(U,V,L-1,0,_)|piece(U,V,L+1,0,_)|piece(U,V,L,1,_),!.
+aCote1([X,Y],[U,V]) :- piece(X,Y, L,7 ,_), piece(U,V,L-1,7,_)|piece(U,V,L+1,7,_)|piece(U,V,L,6,_),!.
 %cas general
-aCote([X,Y], [U,V]) :- piece(X,Y,L,C,_),piece(U,V,L+1,C,_)|piece(U,V,L-1,C,_)|piece(U,V,L,C-1,_)|piece(U,V,L,C+1,_), L>=1, C>=1, L<=6, C<=6.
+aCote1([X,Y], [U,V]) :- piece(X,Y,L,C,_),piece(U,V,L+1,C,_)|piece(U,V,L-1,C,_)|piece(U,V,L,C-1,_)|piece(U,V,L,C+1,_), L>=1, C>=1, L<=6, C<=6.
 
 
 %sens du mouvement demandé
 sens(S) :- sens(gauche) | sens(droite) | sens(bas) | sens(haut). 
 
 % X : pièce poussant, W : pièce poussée, N : nombre de coup restant, 
-possPush(X,silver,W,N,L,C,S) :- N>2,(free(L+1,C),sens(bas))|(free(L,C+1),sens(droite))|(free(L,C-1),sens(gauche))|(free(L-1,C),sens(haut)),piece(W,gold,L,C,in),aCote(X,W),inf(W,X). 
-possPush(X,gold,W,N,L,C,S) :- N>2,(free(L+1,C),sens(bas))|(free(L,C+1),sens(droite))|(free(L,C-1),sens(gauche))|(free(L-1,C),sens(haut)),piece(W,silver,L,C,in),aCote(X,W),inf(W,X).
+%j'ai mis >=2 plutôt
+%j'ai rajouté les contraintes pour que le voisin soit pas hors_board
+possPush(X,silver,W,N,L,C,S) :- N>=2,(free(L+1,C),sens(bas), L+1<=7)|(free(L,C+1),sens(droite), C+1<=7)|(free(L,C-1),sens(gauche), C-1>=0)|(free(L-1,C),sens(haut), L-1>=0),piece(W,gold,L,C,in),aCote(X,W),inf(W,X). 
+possPush(X,gold,W,N,L,C,S) :- N>=2,(free(L+1,C),sens(bas), L+1<=7)|(free(L,C+1),sens(droite),C+1<=7)|(free(L,C-1),sens(gauche), C-1>=0)|(free(L-1,C),sens(haut), L-1>=0),piece(W,silver,L,C,in),aCote(X,W),inf(W,X).
 
 %Comment appliquer le mouvement ? Vraiment pas sure de ce qui suit, parce qu'on ne demande pas si l'utilisateur VEUT déplacer la pièce
 %comment changer l'état ?
@@ -197,7 +198,8 @@ frozen(X) :- aCote(X,Y), inf(X,Y), piece(X,W,_,_,in), piece(Y,Z,_,_,in), W \== Z
 possPull(X,silver,W,N,L,C) :- N>2,piece(W,gold,L,C,in),piece(X,silver,L-1,C,in),free(L-2,C),inf(W,X). 
 possPull(X,gold,W,N,L,C) :- N>2,piece(W,silver,L,C,in),piece(X,gold,L+1,C,in),free(L+2,C),inf(W,X). 
 
-%predicat Get_Move, on ajoute un move au tableau
+%predicat Get_Move, on ajoute un move au tableau :
+get_moves(_, [_,_,_,0],_ ):- !.
 get_moves([[[L1,C1],[L2,C2]]|L], Gamestate, Board) :- get_moves(L,Gamestate, Board), move([L1,C1],[L2,C2]).
 
 consult(arimaa.pl).
