@@ -67,21 +67,24 @@ side(X) :- oppSide(X,_).
     (Col, Lin) est la position de la pièce sur le plateau. (plateau de 8x8)
     Etat détermine si la pièce est en jeu, si elle est en jeu et est frozen, ou si elle est hors jeu (dans un piège); Etat peut prendre les valeurs 'in', 'frozen' ou 'out'.
 
+%etat --> faire une transition de in vers out si une piece est dans un trap --> ligne 2(enfin 72 plutôt)
 etat(X) :- etat(in) | etat(frozen) | etat(out).
+piece(X,Y,_,_,out):- piece(X,Y,_,_,in), trap(X,Y).
+
 position(X,Y).
 piece(X,Y,L,C,E):-type(X),side(Y),position(L,C),etat(E).
-diffType(X,Y) :- piece(X,A,_,_,_),piece(Y,B,_,_,_),A \== B. 
+diffType(X,Y) :- piece(X,A,_,_,_),piece(Y,B,_,_,_),A \== B. %ici c'est side différents, si on veut le type diff alors rajouer X\==Y.
 
 %predicat trap
 trap(X,Y) :- piece(X,Y,2,2,_) | piece(X,Y,5,2,_) | piece(X,Y,2,5,_) | piece(X,Y,5,5,_).  
 %(ici X est le type, et Y side)
 
 %ajout au tableau des capturés
-captured([[T|Q],X,Y]) :- trap(X,Y), captured([T|Q]). 
+captured([[X,Y]|L]) :- trap(X,Y), captured(L). 
 
 %a faire plus tard
 %ajout au tableau des frozen
-frozenTab([[T|Q],X,Y]) :- piece(X,Y,_,_,frozen), frozenTab([T|Q]).
+frozenTab([[X,Y]|L]) :- piece(X,Y,_,_,frozen), frozenTab(L).
 
 %commentaires pour les déplacements
 %Pour les pièces 4 directions possibles : forward, backward, left and right
@@ -104,37 +107,57 @@ frozenTab([[T|Q],X,Y]) :- piece(X,Y,_,_,frozen), frozenTab([T|Q]).
     
  %predicat gamestate
  gamestate(X, Y, Z, U) :- side(X), captured(Y), frozen(Z), remainSteps(U), U<=4.
- %les pièces capturées et frozen sont des listes?
+ %les pièces capturées et frozen sont des listes?  La réponse est oui, en tout cas c'est comme ça que je l'ai codé
  
  %predicat remainSteps  //pas sure du tout
- remainSteps(0).
- remainSteps(N) :-  N>0, M is N-1, remainSteps(M).
+ remainSteps(0):-!.
+ remainSteps(N) :-  M>0, M is N+1, remainSteps(M).
 %en fait je vois pas l'interet de faire de la récursivité : remainSteps(N) :- N>0,N<=4. 
+%C'est pour pouvoir l'utiliser dans une boucle ou autre, mais t'as peut être raison, ya moyen que ça soit inutile
 
 concat([],L,L). 
 concat([X|L1], L2,[X|L3]) :- concat(L1,L2,L3).
 
 %prédicat Free (place libre) 
 notFree(X,Y) :- piece(_,_,X,Y,_).
+% attention, ce n'est pas juste en mettant le mot "not" dans le nom du prédicat que tu vas créer une négation
+%il faut créer un prédicat normal p(X,Y), et ensuite tu peux appeler sa négation(en gros dire que c'est pas vérifié) dans 
+%une règle pour un autre prédicat :
+free(X,Y) :- not(piece(_,_,X,Y,_). 
 %diapo101 du poly
 
 %predicat board
-board([[T|Q],[L,C,X,Y]]) :- board([T|Q]), piece(X,Y,L,C,in|frozen), L<=7, L>=0, C<=7, L>=0, not trap(X,Y).  
-//est ce qu'il faut qu'on se démerde pour vérifier qu'aucune piece n'est présente à la même position ?
+board([[L,C,X,Y]|L]) :- board(L), piece(X,Y,L,C,in|frozen), L<=7, L>=0, C<=7, L>=0, not trap(X,Y), free(L,C).  
 //concaténation ? j'aurais bien ajouter E. : board([[T|Q],[L,C,X,Y,E]]) :- board([T|Q]), piece(X,Y,L,C,E),E == in|frozen, L<=7, L>=0, C<=7, L>=0, not trap(X,Y)
  
 %predicat possMove, en supposant silver en haut et gold en bas
 %on ne peut pas bouger les out ou silver
 %cas special des lapins qui ne peuvent pas aller backward
-%Pourquoi board([[_],[L+1,C]],_,_) et pas board([[_],[L+1,C,_,_],[_]])?
+%Pourquoi board([[_],[L+1,C]],_,_) et pas board([[_],[L+1,C,_,_],[_]])?   Je pense que tu as raison...
 
 possMove(rabbit,silver,[[[L,C],[L+1, C]],[[L,C],[L,C+1]],[[L,C],[L,C-1]]]) :- piece(rabbit,silver,L,C,in), not board([[_],[L+1,C]],_,_), not board([[_],[L,C+1]],_,_), not board([[_],[L,C-1]],_,_).
 possMove(rabbit,gold,[[[L,C],[L-1, C]],[[L,C],[L,C+1]],[[L,C],[L,C-1]]]) :- piece(rabbit,gold,L,C,in), not board([[_],[L-1,C]],_,_), not board([[_],[L,C+1]],_,_), not board([[_],[L,C-1]],_,_).
 possMove(X,Y,[[[L,C],[L-1, C]],[[L,C],[L,C+1]],[[L,C],[L,C-1]],[[L,C],[L+1,C]]]) ;- piece(X,Y,L,C,in), X \== rabbit , not board([[_],[L-1,C]],_,_), not board([[_],[L,C+1]],_,_), not board([[_],[L,C-1]],_,_), not board([[_],[L+1,C]],_,_). 
 
 aCote1(X,Y) :- piece(X,_,L,C,_),piece(Y,_,L+1,C,_)|piece(Y,_,L-1,C,_)|piece(Y,_,L,C-1,_)|piece(Y,_,L,C+1,_). 
+%il faut peut être aussi rajouter les diagonales non ?
 aCote(X,Y) :- aCote1(X,Y). 
 aCote(X,Y) :- aCote1(Y,X). 
+%Pourquoi avoir utilisé aCote1 au lieu de juste faire :
+aCote(X,Y) :- aCote(Y,X).
+%cas dans les angles
+aCote([X,Y],[U,V]) :- piece(X,Y, 0,0 ,_), piece(U,V,1,1,_)|piece(U,V,0,1,_),!.
+aCote([X,Y],[U,V]) :- piece(X,Y, 0,7 ,_), piece(U,V,0,6,_)|piece(U,V,1,7,_),!.
+aCote([X,Y],[U,V]) :- piece(X,Y, 7,7 ,_), piece(U,V,7,6,_)|piece(U,V,6,7,_), !.
+aCote([X,Y],[U,V]) :- piece(X,Y, 7,0 ,_), piece(U,V,7,1,_)|piece(U,V,6,0,_),!.
+%cas 1ere/derniere ligne/colonne
+aCote([X,Y],[U,V]) :- piece(X,Y, 0,C ,_), piece(U,V,0,C-1,_)|piece(U,V,0,C+1,_)|piece(U,V,1,C,_),!.
+aCote([X,Y],[U,V]) :- piece(X,Y, 7,C ,_), piece(U,V,7,C-1,_)|piece(U,V,7,C+1,_)|piece(U,V,6,C,_),!.
+aCote([X,Y],[U,V]) :- piece(X,Y, L,0 ,_), piece(U,V,L-1,0,_)|piece(U,V,L+1,0,_)|piece(U,V,L,1,_),!.
+aCote([X,Y],[U,V]) :- piece(X,Y, L,7 ,_), piece(U,V,L-1,7,_)|piece(U,V,L+1,7,_)|piece(U,V,L,6,_),!.
+%cas general
+aCote([X,Y], [U,V]) :- piece(X,Y,L,C,_),piece(U,V,L+1,C,_)|piece(U,V,L-1,C,_)|piece(U,V,L,C-1,_)|piece(U,V,L,C+1,_), L>=1, C>=1, L<=6, C<=6.
+
 
 %sens du mouvement demandé
 sens(S) :- sens(gauche) | sens(droite) | sens(bas) | sens(haut). 
@@ -175,7 +198,7 @@ possPull(X,silver,W,N,L,C) :- N>2,piece(W,gold,L,C,in),piece(X,silver,L-1,C,in),
 possPull(X,gold,W,N,L,C) :- N>2,piece(W,silver,L,C,in),piece(X,gold,L+1,C,in),free(L+2,C),inf(W,X). 
 
 %predicat Get_Move, on ajoute un move au tableau
-get_moves([[T|Q],[[L1,C1],[L2,C2]]], Gamestate, Board) :- get_moves([T|Q],Gamestate, Board), move([L1,C1],[L2,C2]).
+get_moves([[[L1,C1],[L2,C2]]|L], Gamestate, Board) :- get_moves(L,Gamestate, Board), move([L1,C1],[L2,C2]).
 
 consult(arimaa.pl).
 
