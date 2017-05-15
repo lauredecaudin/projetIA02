@@ -12,8 +12,9 @@
 (en fonction de son type, des autres pièces du jeu, de si elle est frozen ou pas, etc)  //C   OK
 - implémenter push/pull ? //L
 - Implémenter Board //C   OK
-- Implémenter frozen  //L
+- Implémenter frozen  //L OK
 
+- Implémenter le choix libre de placement des pièces au début
 
 
 Revoir la synthaxe (surtout pour les prédicats fait par Capucine)
