@@ -161,45 +161,47 @@ aCote1([X,Y], [U,V]) :- piece(X,Y,L,C,_),piece(U,V,L+1,C,_)|piece(U,V,L-1,C,_)|p
 %sens du mouvement demandé
 sens(S) :- sens(gauche) | sens(droite) | sens(bas) | sens(haut). 
 
-% X : pièce poussant, W : pièce poussée, N : nombre de coup restant, 
+% X : pièce poussant(son type), W : pièce poussée(son type), N : nombre de coup restant, (L, C) :position de la piece à pousser
 %j'ai mis >=2 plutôt
 %j'ai rajouté les contraintes pour que le voisin soit pas hors_board
+
 possPush(X,silver,W,N,L,C,S) :- N>=2,(free(L+1,C),sens(bas), L+1<=7)|(free(L,C+1),sens(droite), C+1<=7)|(free(L,C-1),sens(gauche), C-1>=0)|(free(L-1,C),sens(haut), L-1>=0),piece(W,gold,L,C,in),aCote(X,W),inf(W,X). 
 possPush(X,gold,W,N,L,C,S) :- N>=2,(free(L+1,C),sens(bas), L+1<=7)|(free(L,C+1),sens(droite),C+1<=7)|(free(L,C-1),sens(gauche), C-1>=0)|(free(L-1,C),sens(haut), L-1>=0),piece(W,silver,L,C,in),aCote(X,W),inf(W,X).
 
 %Comment appliquer le mouvement ? Vraiment pas sure de ce qui suit, parce qu'on ne demande pas si l'utilisateur VEUT déplacer la pièce
 %comment changer l'état ?
-piece(W,gold,L2,C2,E) :- possPush(X,silver,W,N,L,C,bas), C2 is C, L2 is L+1. 
+piece(W,gold,L2,C,E) :- possPush(X,silver,W,N,L,C,bas), L2 is L+1. 
 piece(X,silver,L,C,E) :- possPush(X,silver,W,N,L,C,bas). 
 
-piece(W,gold,L2,C2,E) :- possPush(X,silver,W,N,L,C,haut), C2 is C, L2 is L-1. 
+piece(W,gold,L2,C,E) :- possPush(X,silver,W,N,L,C,haut), L2 is L-1. 
 piece(X,silver,L,C,E) :- possPush(X,silver,W,N,L,C,haut). 
 
-piece(W,gold,L2,C2,E) :- possPush(X,silver,W,N,L,C,droite), C2 is C+1, L2 is L. 
+piece(W,gold,L,C2,E) :- possPush(X,silver,W,N,L,C,droite), C2 is C+1. 
 piece(X,silver,L,C,E) :- possPush(X,silver,W,N,L,C,droite). 
 
-piece(W,gold,L2,C2,E) :- possPush(X,silver,W,N,L,C,gauche), C2 is C-1, L2 is L. 
+piece(W,gold,L,C2,E) :- possPush(X,silver,W,N,L,C,gauche), C2 is C-1. 
 piece(X,silver,L,C,E) :- possPush(X,silver,W,N,L,C,gauche). 
 
-piece(W,silver,L2,C2,E) :- possPush(X,gold,W,N,L,C,bas), C2 is C, L2 is L+1. 
+piece(W,silver,L2,C,E) :- possPush(X,gold,W,N,L,C,bas),L2 is L+1. 
 piece(X,gold,L,C,E) :- possPush(X,gold,W,N,L,C,bas). 
 
-piece(W,silver,L2,C2,E) :- possPush(X,gold,W,N,L,C,haut), C2 is C, L2 is L-1. 
+piece(W,silver,L2,C,E) :- possPush(X,gold,W,N,L,C,haut), L2 is L-1. 
 piece(X,gold,L,C,E) :- possPush(X,gold,W,N,L,C,haut). 
 
-piece(W,silver,L2,C2,E) :- possPush(X,gold,W,N,L,C,droite), C2 is C+1, L2 is L. 
+piece(W,silver,L,C2,E) :- possPush(X,gold,W,N,L,C,droite), C2 is C+1. 
 piece(X,gold,L,C,E) :- possPush(X,gold,W,N,L,C,droite). 
 
-piece(W,silver,L2,C2,E) :- possPush(X,gold,W,N,L,C,gauche), C2 is C-1, L2 is L. 
+piece(W,silver,L,C2,E) :- possPush(X,gold,W,N,L,C,gauche), C2 is C-1. 
 piece(X,gold,L,C,E) :- possPush(X,gold,W,N,L,C,gauche). 
 
+%frozen
 frozen(X) :- aCote(X,Y), inf(X,Y), piece(X,W,_,_,in), piece(Y,Z,_,_,in), W \== Z, not (aCote(X,A), piece(A,W,_,_,in)). 
 
 possPull(X,silver,W,N,L,C) :- N>2,piece(W,gold,L,C,in),piece(X,silver,L-1,C,in),free(L-2,C),inf(W,X). 
 possPull(X,gold,W,N,L,C) :- N>2,piece(W,silver,L,C,in),piece(X,gold,L+1,C,in),free(L+2,C),inf(W,X). 
 
 %predicat Get_Move, on ajoute un move au tableau :
-get_moves(_, [_,_,_,0],_ ):- !.
+get_moves(_, [_,_,_,0],_ ):- !.  %si plus de step possible, on arrête
 get_moves([[[L1,C1],[L2,C2]]|L], Gamestate, Board) :- get_moves(L,Gamestate, Board), move([L1,C1],[L2,C2]).
 
 consult(arimaa.pl).
