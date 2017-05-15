@@ -124,5 +124,5 @@ possMove(X,Y,[[[L,C],[L-1, C]],[[L,C],[L,C+1]],[[L,C],[L,C-1]],[[L,C],[L+1,C]]])
 %predicat Get_Move, on ajoute un move au tableau
 get_moves([[T|Q],[[L1,C1],[L2,C2]]], Gamestate, Board) :- get_moves([T|Q],Gamestate, Board), move([L1,C1],[L2,C2]).
 
-
+consult(arimaa.pl).
 
