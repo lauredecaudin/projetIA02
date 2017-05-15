@@ -114,7 +114,10 @@ concat([],L,L).
 concat([X|L1], L2,[X|L3]) :- concat(L1,L2,L3).
 
 %prédicat Free (place libre) 
-notFree(X,Y) :- piece(_,_,X,Y,_).
+notFree(X,Y) :- piece(_,_,X,Y,_).   
+%j'aurais plutot fait Free(X,Y) :- not(piece(_,_,X,Y,_), car pour le coup c'est pas le fait de mettre "not" dans le nom du prédicat qui
+%marche, mais c'est de faire un prédicat p(X,Y) et d'appeler not(p(X,Y)) dans les règles lors de la déclaration d'un autre prédicat ;)
+
 %diapo101 du poly
 
 %predicat board
