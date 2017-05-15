@@ -69,7 +69,8 @@ side(X) :- oppSide(X,_).
 
 %etat --> faire une transition de in vers out si une piece est dans un trap --> ligne 2(enfin 72 plutôt)
 etat(X) :- etat(in) | etat(frozen) | etat(out).
-piece(X,Y,_,_,out):- piece(X,Y,_,_,in), trap(X,Y).
+piece(X,Y,_,_,out):- (piece(X,Y,_,_,in)|piece(X,Y,_,_,frozen)), trap(X,Y).
+piece(X,Y,_,_,frozen) :- piece(X,Y,_,_,in), frozen(X,Y).
 
 position(X,Y).
 piece(X,Y,L,C,E):-type(X),side(Y),position(L,C),etat(E).
@@ -170,6 +171,8 @@ possPush(X,gold,W,N,L,C,S) :- N>=2,(free(L+1,C),sens(bas), L+1<=7)|(free(L,C+1),
 
 %Comment appliquer le mouvement ? Vraiment pas sure de ce qui suit, parce qu'on ne demande pas si l'utilisateur VEUT déplacer la pièce
 %comment changer l'état ?
+%je pense qu'on peut utiliser oppSide() au lieu de toujours utiliser silver ou gold et faire 15 lignes, à voir demain
+J'ai fait un predicat qui normalement change l'était automatiquement (cf plus haut l. 72)
 piece(W,gold,L2,C,E) :- possPush(X,silver,W,N,L,C,bas), L2 is L+1. 
 piece(X,silver,L,C,E) :- possPush(X,silver,W,N,L,C,bas). 
 
@@ -195,7 +198,7 @@ piece(W,silver,L,C2,E) :- possPush(X,gold,W,N,L,C,gauche), C2 is C-1.
 piece(X,gold,L,C,E) :- possPush(X,gold,W,N,L,C,gauche). 
 
 %frozen
-frozen(X) :- aCote(X,Y), inf(X,Y), piece(X,W,_,_,in), piece(Y,Z,_,_,in), W \== Z, not (aCote(X,A), piece(A,W,_,_,in)). 
+frozen(X,W) :- aCote(X,Y), inf(X,Y), piece(X,W,_,_,in), piece(Y,Z,_,_,in), W \== Z, not (aCote(X,A), piece(A,W,_,_,in)). 
 
 possPull(X,silver,W,N,L,C) :- N>2,piece(W,gold,L,C,in),piece(X,silver,L-1,C,in),free(L-2,C),inf(W,X). 
 possPull(X,gold,W,N,L,C) :- N>2,piece(W,silver,L,C,in),piece(X,gold,L+1,C,in),free(L+2,C),inf(W,X). 
