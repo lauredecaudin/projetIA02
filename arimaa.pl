@@ -138,7 +138,7 @@ board([[L,C,X,Y]|L]) :- board(L), piece(X,Y,L,C,in|frozen), L<=7, L>=0, C<=7, L>
 
 possMove(rabbit,silver,[[[L,C],[L+1, C]],[[L,C],[L,C+1]],[[L,C],[L,C-1]]]) :- piece(rabbit,silver,L,C,in), not board([[_],[L+1,C]],_,_), not board([[_],[L,C+1]],_,_), not board([[_],[L,C-1]],_,_).
 possMove(rabbit,gold,[[[L,C],[L-1, C]],[[L,C],[L,C+1]],[[L,C],[L,C-1]]]) :- piece(rabbit,gold,L,C,in), not board([[_],[L-1,C]],_,_), not board([[_],[L,C+1]],_,_), not board([[_],[L,C-1]],_,_).
-possMove(X,Y,[[[L,C],[L-1, C]],[[L,C],[L,C+1]],[[L,C],[L,C-1]],[[L,C],[L+1,C]]]) ;- piece(X,Y,L,C,in), X \== rabbit , not board([[_],[L-1,C]],_,_), not board([[_],[L,C+1]],_,_), not board([[_],[L,C-1]],_,_), not board([[_],[L+1,C]],_,_). 
+possMove(X,Y,[[[L,C],[L-1, C]],[[L,C],[L,C+1]],[[L,C],[L,C-1]],[[L,C],[L+1,C]]]) :- piece(X,Y,L,C,in), X \== rabbit , not board([[_],[L-1,C]],_,_), not board([[_],[L,C+1]],_,_), not board([[_],[L,C-1]],_,_), not board([[_],[L+1,C]],_,_). 
 
 aCote1(X,Y) :- piece(X,_,L,C,_),piece(Y,_,L+1,C,_)|piece(Y,_,L-1,C,_)|piece(Y,_,L,C-1,_)|piece(Y,_,L,C+1,_). 
 
@@ -209,6 +209,14 @@ possPull(X,gold,W,N,L,C) :- N>=2,piece(W,silver,L,C,in),piece(X,gold,L,C-1,in),f
 %predicat Get_Move, on ajoute un move au tableau :
 get_moves(_, [_,_,_,0],_ ):- !.  %si plus de step possible, on arrête
 get_moves([[[L1,C1],[L2,C2]]|L], Gamestate, Board) :- get_moves(L,Gamestate, Board), move([L1,C1],[L2,C2]).
+
+
+%predicat move
+%faire un predicat choix pour que le joeur choisisse parmi les possmove et les possPull/possPush et no_move ?
+%P1=Position 1 [L1,C1] et P2=Position 2 [L2,C2]
+%mais on peut garder L1,C1 et L2,C2 séparés si on veut
+move(L1,C1, X, Y,L2,C2):- possMove(X,Y,[[_],[[L1,C1],[L2,C2]],[_]]). %voir comment on dit que [L1,C1],[L2,C2] est un des mouvements possibles de possMove
+move(L1,C1,X,Y,L2,C2) :- ((L==L1+1,L2 is L1-1)| (L==L1-1,L2 is L1+1)|(C==C1+1,C2 is C1-1)|(C==C1-1,C2 is C1+1)), possPull(X,_,_,_,L,C).
 
 consult(arimaa.pl).
 
