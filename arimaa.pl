@@ -18,11 +18,11 @@
 get_moves([[[1,0],[2,0]],[[0,0],[1,0]],[[0,1],[0,0]],[[0,0],[0,1]]], Gamestate, Board).
 
 
-/* Faut lire le README du Git de P16, ya pleins de prédicats utiles dont on pourrait peut être s'inspirer*/ 
-https://github.com/vincebhx/IA02-Khan/blob/master/README.md
+% Faut lire le README du Git de P16, ya pleins de prédicats utiles dont on pourrait peut être s'inspirer*/ 
+%https://github.com/vincebhx/IA02-Khan/blob/master/README.md
 
-/*Git du projet*/
-/* https://github.com/rlacazel/Prolog-Arimaa  */
+%Git du projet*/
+%https://github.com/rlacazel/Prolog-Arimaa  */
 
 
 
@@ -54,7 +54,7 @@ move([[],[]], L, L).
 
 
 
-/*Petit prédicat pour trouver le joueur adverse*/
+%Petit prédicat pour trouver le joueur adverse*/
 oppSide(silver, gold).
 oppSide(gold, silver).
 
@@ -63,9 +63,9 @@ side(X) :- side(silver) | side(gold).
 side(X) :- oppSide(X,_).  
 
 %Une pièce est définie par un tuple piece(type,side,Lin,Col,Etat), où :
-    Après en soit "strength" est déterminé par "type" donc devient "inutile"
-    (Col, Lin) est la position de la pièce sur le plateau. (plateau de 8x8)
-    Etat détermine si la pièce est en jeu, si elle est en jeu et est frozen, ou si elle est hors jeu (dans un piège); Etat peut prendre les valeurs 'in', 'frozen' ou 'out'.
+%  Après en soit "strength" est déterminé par "type" donc devient "inutile"
+% (Col, Lin) est la position de la pièce sur le plateau. (plateau de 8x8)
+%  Etat détermine si la pièce est en jeu, si elle est en jeu et est frozen, ou si elle est hors jeu (dans un piège); Etat peut prendre les valeurs 'in', 'frozen' ou 'out'.
 
 %etat --> faire une transition de in vers out si une piece est dans un trap --> ligne 2(enfin 72 plutôt)
 etat(X) :- etat(in) | etat(frozen) | etat(out).
@@ -132,8 +132,8 @@ free(X,Y) :- not(piece(_,_,X,Y,_).
 %diapo101 du poly
 
 %predicat board
-board([[L,C,X,Y]|L]) :- board(L), piece(X,Y,L,C,in|frozen), L<=7, L>=0, C<=7, L>=0, not trap(X,Y), free(L,C).  
-//concaténation ? j'aurais bien ajouter E. : board([[T|Q],[L,C,X,Y,E]]) :- board([T|Q]), piece(X,Y,L,C,E),E == in|frozen, L<=7, L>=0, C<=7, L>=0, not trap(X,Y)
+board([[L,C,X,Y,E]|L]) :- board(L), piece(X,Y,L,C,in|frozen),E == in|frozen, L<=7, L>=0, C<=7, L>=0, not trap(X,Y), free(L,C).  
+%concaténation ? j'aurais bien ajouter E. : board([[T|Q],[L,C,X,Y,E]]) :- board([T|Q]), piece(X,Y,L,C,E),E == in|frozen, L<=7, L>=0, C<=7, L>=0, not trap(X,Y)
  
 %predicat possMove, en supposant silver en haut et gold en bas
 %on ne peut pas bouger les out ou silver
@@ -144,11 +144,8 @@ possMove(rabbit,silver,[[[L,C],[L+1, C]],[[L,C],[L,C+1]],[[L,C],[L,C-1]]]) :- pi
 possMove(rabbit,gold,[[[L,C],[L-1, C]],[[L,C],[L,C+1]],[[L,C],[L,C-1]]]) :- piece(rabbit,gold,L,C,in), not board([[_],[L-1,C]],_,_), not board([[_],[L,C+1]],_,_), not board([[_],[L,C-1]],_,_).
 possMove(X,Y,[[[L,C],[L-1, C]],[[L,C],[L,C+1]],[[L,C],[L,C-1]],[[L,C],[L+1,C]]]) :- piece(X,Y,L,C,in), X \== rabbit , not board([[_],[L-1,C]],_,_), not board([[_],[L,C+1]],_,_), not board([[_],[L,C-1]],_,_), not board([[_],[L+1,C]],_,_). 
 
-aCote1(X,Y) :- piece(X,_,L,C,_),piece(Y,_,L+1,C,_)|piece(Y,_,L-1,C,_)|piece(Y,_,L,C-1,_)|piece(Y,_,L,C+1,_). 
 
 %new version :
-aCote(X,Y) :- aCote1(X,Y). 
-aCote(X,Y) :- aCote1(Y,X). 
 %cas dans les angles
 aCote1([X,Y],[U,V]) :- piece(X,Y, 0,0 ,_), piece(U,V,1,1,_)|piece(U,V,0,1,_),!.
 aCote1([X,Y],[U,V]) :- piece(X,Y, 0,7 ,_), piece(U,V,0,6,_)|piece(U,V,1,7,_),!.
@@ -161,6 +158,9 @@ aCote1([X,Y],[U,V]) :- piece(X,Y, L,0 ,_), piece(U,V,L-1,0,_)|piece(U,V,L+1,0,_)
 aCote1([X,Y],[U,V]) :- piece(X,Y, L,7 ,_), piece(U,V,L-1,7,_)|piece(U,V,L+1,7,_)|piece(U,V,L,6,_),!.
 %cas general
 aCote1([X,Y], [U,V]) :- piece(X,Y,L,C,_),piece(U,V,L+1,C,_)|piece(U,V,L-1,C,_)|piece(U,V,L,C-1,_)|piece(U,V,L,C+1,_), L>=1, C>=1, L<=6, C<=6.
+%autres
+aCote([X,Y],[U,V]) :- aCote1([X,Y],[U,V]). 
+aCote([X,Y],[U,V]) :- aCote1([U,V],[X,Y]).
 
 not(P) :- P, !, fail.
 not(_).
