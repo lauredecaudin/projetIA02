@@ -171,7 +171,6 @@ sens(S) :- sens(gauche) | sens(droite) | sens(bas) | sens(haut).
 % X : pièce poussant(son type), W : pièce poussée(son type), N : nombre de coup restant, (L, C) :position de la piece à pousser
 %j'ai mis >=2 plutôt
 %j'ai rajouté les contraintes pour que le voisin soit pas hors_board
-
 possPush(X,silver,W,N,L,C,S) :- N>=2,(free(L+1,C),sens(bas), L+1<=7)|(free(L,C+1),sens(droite), C+1<=7)|(free(L,C-1),sens(gauche), C-1>=0)|(free(L-1,C),sens(haut), L-1>=0),piece(W,gold,L,C,in),aCote(X,W),inf(W,X). 
 possPush(X,gold,W,N,L,C,S) :- N>=2,(free(L+1,C),sens(bas), L+1<=7)|(free(L,C+1),sens(droite),C+1<=7)|(free(L,C-1),sens(gauche), C-1>=0)|(free(L-1,C),sens(haut), L-1>=0),piece(W,silver,L,C,in),aCote(X,W),inf(W,X).
 
@@ -205,8 +204,10 @@ piece(W,silver,L,C2,_) :- possPush(X,gold,W,N,L,C,gauche), C2 is C-1.
 piece(X,gold,L,C,_) :- possPush(X,gold,W,N,L,C,gauche). 
 
 %frozen
-frozen(X,W) :- aCote(X,Y), inf(X,Y), piece(X,W,_,_,in), piece(Y,Z,_,_,in), W \== Z, not (aCote(X,A), piece(A,W,_,_,in)). 
+frozen(X,W) :- aCote([X,W],[Y,Z]), inf(X,Y), piece(X,W,_,_,in), piece(Y,Z,_,_,in), W \== Z, not (aCote([X,W],[A,W])). 
 
+%faire aussi vers le haut/colonnes etc, toute direction
+%on ne peut pas déloger ses propres pièces
 possPull(X,silver,W,N,L,C) :- N>=2,piece(W,gold,L,C,in),piece(X,silver,L-1,C,in),free(L-2,C), L-2>=0,inf(W,X). 
 possPull(X,gold,W,N,L,C) :- N>=2,piece(W,silver,L,C,in),piece(X,gold,L+1,C,in),free(L+2,C), L+2<=7,inf(W,X).
 
