@@ -75,7 +75,8 @@ piece(X,Y,_,_,frozen) :- piece(X,Y,_,_,in), frozen(X,Y).
 
 position(X,Y).
 piece(X,Y,L,C,E):-type(X),side(Y),position(L,C),etat(E).
-diffType(X,Y) :- piece(X,A,_,_,_),piece(Y,B,_,_,_),A \== B. %ici c'est side différents, si on veut le type diff alors rajouer X\==Y.
+diffType(X,Y) :- piece(X,A,_,_,_),piece(Y,B,_,_,_),A \= B.
+%ici c'est side différents, si on veut le type diff alors rajouer X\==Y.
 
 %predicat trap
 trap(X,Y) :- piece(X,Y,2,2,_) | piece(X,Y,5,2,_) | piece(X,Y,2,5,_) | piece(X,Y,5,5,_).  
@@ -132,8 +133,8 @@ free(X,Y) :- not(piece(_,_,X,Y,_).
 %diapo101 du poly
 
 %predicat board
-board([[L,C,X,Y,E]|L]) :- board(L), piece(X,Y,L,C,in|frozen),E == in|frozen, L<=7, L>=0, C<=7, L>=0, not trap(X,Y), free(L,C).  
-%concaténation ? j'aurais bien ajouter E. : board([[T|Q],[L,C,X,Y,E]]) :- board([T|Q]), piece(X,Y,L,C,E),E == in|frozen, L<=7, L>=0, C<=7, L>=0, not trap(X,Y)
+board([[L,C,X,Y,E]|L]) :- board(L), piece(X,Y,L,C,in|frozen),E =:= in|frozen, L<=7, L>=0, C<=7, L>=0, not trap(X,Y), free(L,C).  
+%concaténation ? j'aurais bien ajouter E. : board([[T|Q],[L,C,X,Y,E]]) :- board([T|Q]), piece(X,Y,L,C,E),E =:= in|frozen, L<=7, L>=0, C<=7, L>=0, not trap(X,Y)
  
 %predicat possMove, en supposant silver en haut et gold en bas
 %on ne peut pas bouger les out ou silver
@@ -142,7 +143,7 @@ board([[L,C,X,Y,E]|L]) :- board(L), piece(X,Y,L,C,in|frozen),E == in|frozen, L<=
 
 possMove(rabbit,silver,[[[L,C],[L+1, C]],[[L,C],[L,C+1]],[[L,C],[L,C-1]]]) :- piece(rabbit,silver,L,C,in), not board([[_],[L+1,C]],_,_), not board([[_],[L,C+1]],_,_), not board([[_],[L,C-1]],_,_).
 possMove(rabbit,gold,[[[L,C],[L-1, C]],[[L,C],[L,C+1]],[[L,C],[L,C-1]]]) :- piece(rabbit,gold,L,C,in), not board([[_],[L-1,C]],_,_), not board([[_],[L,C+1]],_,_), not board([[_],[L,C-1]],_,_).
-possMove(X,Y,[[[L,C],[L-1, C]],[[L,C],[L,C+1]],[[L,C],[L,C-1]],[[L,C],[L+1,C]]]) :- piece(X,Y,L,C,in), X \== rabbit , not board([[_],[L-1,C]],_,_), not board([[_],[L,C+1]],_,_), not board([[_],[L,C-1]],_,_), not board([[_],[L+1,C]],_,_). 
+possMove(X,Y,[[[L,C],[L-1, C]],[[L,C],[L,C+1]],[[L,C],[L,C-1]],[[L,C],[L+1,C]]]) :- piece(X,Y,L,C,in), X \= rabbit , not board([[_],[L-1,C]],_,_), not board([[_],[L,C+1]],_,_), not board([[_],[L,C-1]],_,_), not board([[_],[L+1,C]],_,_). 
 
 
 %new version :
@@ -204,7 +205,7 @@ piece(W,silver,L,C2,_) :- possPush(X,gold,W,N,L,C,gauche), C2 is C-1.
 piece(X,gold,L,C,_) :- possPush(X,gold,W,N,L,C,gauche). 
 
 %frozen
-frozen(X,W) :- aCote([X,W],[Y,Z]), inf(X,Y), piece(X,W,_,_,in), piece(Y,Z,_,_,in), W \== Z, not(aCote([X,W],[A,W])). 
+frozen(X,W) :- aCote([X,W],[Y,Z]), inf(X,Y), piece(X,W,_,_,in), piece(Y,Z,_,_,in), W \= Z, not(aCote([X,W],[A,W])). 
 
 %faire aussi vers le haut/colonnes etc, toute direction
 %on ne peut pas déloger ses propres pièces
@@ -234,8 +235,8 @@ get_moves([[[L1,C1],[L2,C2]]|L], Gamestate, Board) :- get_moves(L,Gamestate, Boa
 %P1=Position 1 [L1,C1] et P2=Position 2 [L2,C2]
 %mais on peut garder L1,C1 et L2,C2 séparés si on veut
 move([L1,C1],[L2,C2]):- possMove(_,_,[[_],[[L1,C1],[L2,C2]],[_]]). %voir comment on dit que [L1,C1],[L2,C2] est un des mouvements possibles de possMove
-move([L1,C1],[L2,C2]) :- ((L==L1+1,L2 is L1-1)| (L==L1-1,L2 is L1+1)|(C==C1+1,C2 is C1-1)|(C==C1-1,C2 is C1+1)), possPull(_,_,_,_,L,C).
-move([L1,C1],[L2,C2]) :- ((L==L1+1,L2 is L1+1)| (L==L1-1,L2 is L1-1)|(C==C1+1,C2 is C1+1)|(C==C1-1,C2 is C1-1)), possPush(_,_,_,_,L,C,_).
+move([L1,C1],[L2,C2]) :- ((L=:=L1+1,L2 is L1-1)| (L=:=L1-1,L2 is L1+1)|(C=:=C1+1,C2 is C1-1)|(C=:=C1-1,C2 is C1+1)), possPull(_,_,_,_,L,C).
+move([L1,C1],[L2,C2]) :- ((L=:=L1+1,L2 is L1+1)| (L=:=L1-1,L2 is L1-1)|(C=:=C1+1,C2 is C1+1)|(C=:=C1-1,C2 is C1-1)), possPush(_,_,_,_,L,C,_).
 
 consult(arimaa.pl).
 
