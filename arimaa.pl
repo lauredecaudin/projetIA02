@@ -50,7 +50,7 @@ strength(elephant, 6).
 type(X) :- type(rabbit) | type(cat) | type(dog) | type(horse) | type(camel) | type(elephant).
 
 
-move([[],[]], L, L).
+%move([[],[]], L, L).
 
 
 
@@ -73,6 +73,7 @@ piece(X,Y,_,_,out):- (piece(X,Y,_,_,in)|piece(X,Y,_,_,frozen)), trap(X,Y), not(a
 % pas d'accord car si tu as un ami à coté de toi tu ne disparait pas. --> proposition au dessus
 piece(X,Y,_,_,frozen) :- piece(X,Y,_,_,in), frozen(X,Y).
 
+%ici je trouve ça bizarre le position...
 position(X,Y).
 piece(X,Y,L,C,E):-type(X),side(Y),position(L,C),etat(E).
 diffType(X,Y) :- piece(X,A,_,_,_),piece(Y,B,_,_,_),A \= B.
@@ -80,12 +81,11 @@ diffType(X,Y) :- piece(X,A,_,_,_),piece(Y,B,_,_,_),A \= B.
 
 %predicat trap
 trap(X,Y) :- piece(X,Y,2,2,_) | piece(X,Y,5,2,_) | piece(X,Y,2,5,_) | piece(X,Y,5,5,_).  
-%(ici X est le type, et Y side)
+
 
 %ajout au tableau des capturés
 captured([[X,Y]|L]) :- trap(X,Y), captured(L). 
 
-%a faire plus tard
 %ajout au tableau des frozen
 frozenTab([[X,Y]|L]) :- piece(X,Y,_,_,frozen), frozenTab(L).
 
@@ -133,17 +133,16 @@ free(X,Y) :- not(piece(_,_,X,Y,_).
 %diapo101 du poly
 
 %predicat board
-board([[L,C,X,Y,E]|L]) :- board(L), piece(X,Y,L,C,in|frozen),E =:= in|frozen, L<=7, L>=0, C<=7, L>=0, not trap(X,Y), free(L,C).  
-%concaténation ? j'aurais bien ajouter E. : board([[T|Q],[L,C,X,Y,E]]) :- board([T|Q]), piece(X,Y,L,C,E),E =:= in|frozen, L<=7, L>=0, C<=7, L>=0, not trap(X,Y)
+board([[L,C,X,Y,E]|L]) :- board(L), piece(X,Y,L,C,in|frozen),((E =:= in)|(E=:=frozen)), L<=7, L>=0, C<=7, L>=0, not trap(X,Y), free(L,C).  
  
 %predicat possMove, en supposant silver en haut et gold en bas
 %on ne peut pas bouger les out ou silver
 %cas special des lapins qui ne peuvent pas aller backward
 %Pourquoi board([[_],[L+1,C]],_,_) et pas board([[_],[L+1,C,_,_],[_]])?   Je pense que tu as raison...
 
-possMove(rabbit,silver,[[[L,C],[L+1, C]],[[L,C],[L,C+1]],[[L,C],[L,C-1]]]) :- piece(rabbit,silver,L,C,in), not board([[_],[L+1,C]],_,_), not board([[_],[L,C+1]],_,_), not board([[_],[L,C-1]],_,_).
-possMove(rabbit,gold,[[[L,C],[L-1, C]],[[L,C],[L,C+1]],[[L,C],[L,C-1]]]) :- piece(rabbit,gold,L,C,in), not board([[_],[L-1,C]],_,_), not board([[_],[L,C+1]],_,_), not board([[_],[L,C-1]],_,_).
-possMove(X,Y,[[[L,C],[L-1, C]],[[L,C],[L,C+1]],[[L,C],[L,C-1]],[[L,C],[L+1,C]]]) :- piece(X,Y,L,C,in), X \= rabbit , not board([[_],[L-1,C]],_,_), not board([[_],[L,C+1]],_,_), not board([[_],[L,C-1]],_,_), not board([[_],[L+1,C]],_,_). 
+possMove(rabbit,silver,[[[L,C],[L+1, C]],[[L,C],[L,C+1]],[[L,C],[L,C-1]]]) :- piece(rabbit,silver,L,C,in), not board([[_],[L+1,C,_,_,_]],[_]]), not board([[_],[L,C+1,_,_,_]],[_]]), not board([[_],[L,C-1,_,_,_]],[_]]).
+possMove(rabbit,gold,[[[L,C],[L-1, C]],[[L,C],[L,C+1]],[[L,C],[L,C-1]]]) :- piece(rabbit,gold,L,C,in), not board([[_],[L-1,C,_,_,_]],[_]]), not(board([[_],[L,C+1,_,_,_]],[_]]), not(board([[_],[L,C-1,_,_,_]],[_]]).
+possMove(X,Y,[[[L,C],[L-1, C]],[[L,C],[L,C+1]],[[L,C],[L,C-1]],[[L,C],[L+1,C]]]) :- piece(X,Y,L,C,in), X \= rabbit , not(board([[_],[L-1,C,_,_,_]],[_]])), not(board([[_],[L,C+1,_,_,_]],[_]])), not board([[_],[L,C-1,_,_,_]],[_]]), not(board([[_],[L+1,C,_,_,_]],[_]])). 
 
 
 %new version :
