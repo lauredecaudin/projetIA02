@@ -113,7 +113,7 @@ frozenTab([[X,Y]|L]) :- piece(X,Y,_,_,frozen), frozenTab(L).
  
  % Predicat remainSteps  //pas sure du tout
  remainSteps(0):-!.
- remainSteps(N) :-  M>0, M is N+1, remainSteps(M).
+ remainSteps(N) :-  M is N+1, remainSteps(M).
  % Je crois qu'on peut enlever le M>0, si on met M>0. 
  % En fait je vois pas l'interet de faire de la récursivité : remainSteps(N) :- N>0,N<=4. 
  % C'est pour pouvoir l'utiliser dans une boucle ou autre, mais t'as peut être raison, ya moyen que ça soit inutile
