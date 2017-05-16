@@ -19,3 +19,8 @@
 
 
 Revoir la synthaxe (surtout pour les prédicats fait par Capucine)
+
+Erreurs :
+Syntax error: Unbalanced operator
+Syntax error: Operator expected
+Syntax error: Illegal start of term
