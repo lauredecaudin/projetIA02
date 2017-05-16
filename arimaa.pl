@@ -204,7 +204,7 @@ piece(W,silver,L,C2,_) :- possPush(X,gold,W,N,L,C,gauche), C2 is C-1.
 piece(X,gold,L,C,_) :- possPush(X,gold,W,N,L,C,gauche). 
 
 %frozen
-frozen(X,W) :- aCote([X,W],[Y,Z]), inf(X,Y), piece(X,W,_,_,in), piece(Y,Z,_,_,in), W \== Z, not (aCote([X,W],[A,W])). 
+frozen(X,W) :- aCote([X,W],[Y,Z]), inf(X,Y), piece(X,W,_,_,in), piece(Y,Z,_,_,in), W \== Z, not(aCote([X,W],[A,W])). 
 
 %faire aussi vers le haut/colonnes etc, toute direction
 %on ne peut pas déloger ses propres pièces
@@ -233,9 +233,9 @@ get_moves([[[L1,C1],[L2,C2]]|L], Gamestate, Board) :- get_moves(L,Gamestate, Boa
 %on est obligé de faire au moins un mouvement
 %P1=Position 1 [L1,C1] et P2=Position 2 [L2,C2]
 %mais on peut garder L1,C1 et L2,C2 séparés si on veut
-move(L1,C1, X, Y,L2,C2):- possMove(X,Y,[[_],[[L1,C1],[L2,C2]],[_]]). %voir comment on dit que [L1,C1],[L2,C2] est un des mouvements possibles de possMove
-move(L1,C1,X,Y,L2,C2) :- ((L==L1+1,L2 is L1-1)| (L==L1-1,L2 is L1+1)|(C==C1+1,C2 is C1-1)|(C==C1-1,C2 is C1+1)), possPull(X,_,_,_,L,C).
-move(L1,C1,X,Y,L2,C2) :- ((L==L1+1,L2 is L1+1)| (L==L1-1,L2 is L1-1)|(C==C1+1,C2 is C1+1)|(C==C1-1,C2 is C1-1)), possPush(X,_,_,_,L,C,_).
+move([L1,C1],[L2,C2]):- possMove(_,_,[[_],[[L1,C1],[L2,C2]],[_]]). %voir comment on dit que [L1,C1],[L2,C2] est un des mouvements possibles de possMove
+move([L1,C1],[L2,C2]) :- ((L==L1+1,L2 is L1-1)| (L==L1-1,L2 is L1+1)|(C==C1+1,C2 is C1-1)|(C==C1-1,C2 is C1+1)), possPull(_,_,_,_,L,C).
+move([L1,C1],[L2,C2]) :- ((L==L1+1,L2 is L1+1)| (L==L1-1,L2 is L1-1)|(C==C1+1,C2 is C1+1)|(C==C1-1,C2 is C1-1)), possPush(_,_,_,_,L,C,_).
 
 consult(arimaa.pl).
 
