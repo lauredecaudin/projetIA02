@@ -162,6 +162,8 @@ aCote1([X,Y],[U,V]) :- piece(X,Y, L,7 ,_), piece(U,V,L-1,7,_)|piece(U,V,L+1,7,_)
 %cas general
 aCote1([X,Y], [U,V]) :- piece(X,Y,L,C,_),piece(U,V,L+1,C,_)|piece(U,V,L-1,C,_)|piece(U,V,L,C-1,_)|piece(U,V,L,C+1,_), L>=1, C>=1, L<=6, C<=6.
 
+not(P) :- P, !, fail.
+not(_).
 
 %sens du mouvement demandé
 sens(S) :- sens(gauche) | sens(droite) | sens(bas) | sens(haut). 
