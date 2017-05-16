@@ -35,8 +35,7 @@ inf1(dog, horse).
 inf1(horse, camel).
 inf1(camel, elephant).
 
-%faire predicat strength je pense, un peu de la même maniere, tentative :
-strength(rabbit, 1).
+
 %non en fait a part attribuer strength(cat, 2). strength(dog, 3). etc je vois pas
 strength(rabbit, 1).
 strength(cat, 2).
@@ -69,7 +68,7 @@ side(X) :- oppSide(X,_).
 
 %etat --> faire une transition de in vers out si une piece est dans un trap --> ligne 2(enfin 72 plutôt)
 etat(X) :- etat(in) | etat(frozen) | etat(out).
-piece(X,Y,_,_,out):- (piece(X,Y,_,_,in)|piece(X,Y,_,_,frozen)), trap(X,Y), not(aCote([X,Y],[W,Y])),.
+piece(X,Y,_,_,out):- (piece(X,Y,_,_,in)|piece(X,Y,_,_,frozen)), trap(X,Y), not(aCote([X,Y],[W,Y])).
 % pas d'accord car si tu as un ami à coté de toi tu ne disparait pas. --> proposition au dessus
 piece(X,Y,_,_,frozen) :- piece(X,Y,_,_,in), frozen(X,Y).
 
@@ -77,7 +76,7 @@ piece(X,Y,_,_,frozen) :- piece(X,Y,_,_,in), frozen(X,Y).
 position(X,Y).
 piece(X,Y,L,C,E):-type(X),side(Y),position(L,C),etat(E).
 diffType(X,Y) :- piece(X,A,_,_,_),piece(Y,B,_,_,_),A \= B.
-%ici c'est side différents, si on veut le type diff alors rajouer X\==Y.
+%ici c'est side différents, si on veut le type diff alors rajouer X\=Y.
 
 %predicat trap
 trap(X,Y) :- piece(X,Y,2,2,_) | piece(X,Y,5,2,_) | piece(X,Y,2,5,_) | piece(X,Y,5,5,_).  
@@ -115,7 +114,6 @@ frozenTab([[X,Y]|L]) :- piece(X,Y,_,_,frozen), frozenTab(L).
  % Predicat remainSteps  //pas sure du tout
  remainSteps(0):-!.
  remainSteps(N) :-  M is N+1, remainSteps(M).
- % Je crois qu'on peut enlever le M>0, si on met M>0. 
  % En fait je vois pas l'interet de faire de la récursivité : remainSteps(N) :- N>0,N<=4. 
  % C'est pour pouvoir l'utiliser dans une boucle ou autre, mais t'as peut être raison, ya moyen que ça soit inutile
 
@@ -129,7 +127,7 @@ notFree(X,Y) :- piece(_,_,X,Y,_).
 
 %il faut créer un prédicat normal p(X,Y), et ensuite tu peux appeler sa négation(en gros dire que c'est pas vérifié) dans 
 %une règle pour un autre prédicat :
-free(X,Y) :- not(piece(_,_,X,Y,_). 
+free(X,Y) :- not(piece(_,_,X,Y,_)). 
 %diapo101 du poly
 
 %predicat board
@@ -149,7 +147,7 @@ possMove(X,Y,[[[L,C],[L-1, C]],[[L,C],[L,C+1]],[[L,C],[L,C-1]],[[L,C],[L+1,C]]])
 %cas dans les angles
 aCote1([X,Y],[U,V]) :- piece(X,Y, 0,0 ,_), piece(U,V,1,1,_)|piece(U,V,0,1,_),!.
 aCote1([X,Y],[U,V]) :- piece(X,Y, 0,7 ,_), piece(U,V,0,6,_)|piece(U,V,1,7,_),!.
-aCote1([X,Y],[U,V]) :- piece(X,Y, 7,7 ,_), piece(U,V,7,6,_)|piece(U,V,6,7,_), !.
+aCote1([X,Y],[U,V]) :- piece(X,Y, 7,7 ,_), piece(U,V,7,6,_)|piece(U,V,6,7,_),!.
 aCote1([X,Y],[U,V]) :- piece(X,Y, 7,0 ,_), piece(U,V,7,1,_)|piece(U,V,6,0,_),!.
 %cas 1ere/derniere ligne/colonne
 aCote1([X,Y],[U,V]) :- piece(X,Y, 0,C ,_), piece(U,V,0,C-1,_)|piece(U,V,0,C+1,_)|piece(U,V,1,C,_),!.
