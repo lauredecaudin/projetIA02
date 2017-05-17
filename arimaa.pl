@@ -25,6 +25,9 @@ get_moves([[[1,0],[2,0]],[[0,0],[1,0]],[[0,1],[0,0]],[[0,0],[0,1]]], Gamestate, 
 %https://github.com/rlacazel/Prolog-Arimaa  */
 
 
+%predicat not
+not(P) :- P, !, fail.
+not(P).
 
 % predicat inferiorite
 inf(X,Y) :- inf1(X,Y).
@@ -159,9 +162,6 @@ aCote1([X,Y], [U,V]) :- piece(X,Y,L,C,_),piece(U,V,L+1,C,_)|piece(U,V,L-1,C,_)|p
 %autres
 aCote([X,Y],[U,V]) :- aCote1([X,Y],[U,V]). 
 aCote([X,Y],[U,V]) :- aCote1([U,V],[X,Y]).
-
-not(P) :- P, !, fail.
-not(_).
 
 %sens du mouvement demandé
 sens(S) :- sens(gauche) | sens(droite) | sens(bas) | sens(haut). 
