@@ -86,7 +86,7 @@ trap(X,Y) :- piece(X,Y,2,2,_) | piece(X,Y,5,2,_) | piece(X,Y,2,5,_) | piece(X,Y,
 
 
 %ajout au tableau des capturés
-captured([[X,Y]|L]) :- trap(X,Y), captured(L). 
+captured([[X,Y]|L]) :- trap(X,Y), captured([L|_]). 
 
 %ajout au tableau des frozen
 frozenTab([[X,Y]|L]) :- piece(X,Y,_,_,frozen), frozenTab(L).
