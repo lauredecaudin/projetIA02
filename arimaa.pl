@@ -134,7 +134,7 @@ free(X,Y) :- not(piece(_,_,X,Y,_)).
 %diapo101 du poly
 
 %predicat board
-board([[L,C,X,Y,E]|L]) :- board(L), piece(X,Y,L,C,in|frozen),((E =:= in)|(E=:=frozen)), L=<7, L>=0, C=<7, L>=0, not trap(X,Y), free(L,C).  
+board([[L,C,X,Y,E]|B]) :- board(B), piece(X,Y,L,C,in|frozen),((E =:= in)|(E=:=frozen)), L=<7, L>=0, C=<7, L>=0, not trap(X,Y), free(L,C).  
  
 %predicat possMove, en supposant silver en haut et gold en bas
 %on ne peut pas bouger les out ou silver
@@ -169,8 +169,8 @@ sens(S) :- sens(gauche) | sens(droite) | sens(bas) | sens(haut).
 % X : pièce poussant(son type), W : pièce poussée(son type), N : nombre de coup restant, (L, C) :position de la piece à pousser
 %j'ai mis >=2 plutôt
 %j'ai rajouté les contraintes pour que le voisin soit pas hors_board
-possPush(X,silver,W,N,L,C,S) :- N>=2,(free(L+1,C),sens(bas), L+1=<7)|(free(L,C+1),sens(droite), C+1=<7)|(free(L,C-1),sens(gauche), C-1>=0)|(free(L-1,C),sens(haut), L-1>=0),piece(W,gold,L,C,in),aCote(X,W),inf(W,X). 
-possPush(X,gold,W,N,L,C,S) :- N>=2,(free(L+1,C),sens(bas), L+1=<7)|(free(L,C+1),sens(droite),C+1=<7)|(free(L,C-1),sens(gauche), C-1>=0)|(free(L-1,C),sens(haut), L-1>=0),piece(W,silver,L,C,in),aCote(X,W),inf(W,X).
+possPush(X,silver,W,N,L,C,S) :- N>=2,((free(L+1,C),sens(bas), L+1=<7)|(free(L,C+1),sens(droite), C+1=<7)|(free(L,C-1),sens(gauche), C-1>=0)|(free(L-1,C),sens(haut), L-1>=0)),piece(W,gold,L,C,in),aCote(X,W),inf(W,X). 
+possPush(X,gold,W,N,L,C,S) :- N>=2,((free(L+1,C),sens(bas), L+1=<7)|(free(L,C+1),sens(droite),C+1=<7)|(free(L,C-1),sens(gauche), C-1>=0)|(free(L-1,C),sens(haut), L-1>=0)),piece(W,silver,L,C,in),aCote(X,W),inf(W,X).
 
 %Comment appliquer le mouvement ? Vraiment pas sure de ce qui suit, parce qu'on ne demande pas si l'utilisateur VEUT déplacer la pièce
 %comment changer l'état ?
