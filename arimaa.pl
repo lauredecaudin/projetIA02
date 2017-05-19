@@ -84,6 +84,8 @@ diffType(X,Y) :- piece(X,A,_,_,_),piece(Y,B,_,_,_),A \= B.
 %predicat trap
 trap(X,Y) :- piece(X,Y,2,2,_) | piece(X,Y,5,2,_) | piece(X,Y,2,5,_) | piece(X,Y,5,5,_).  
 
+%j'aimerais faire une fonction qui supprime l'élément de board si il est trap (out)
+retireElement
 
 %ajout au tableau des capturés
 captured([[X,Y]|L]) :- trap(X,Y), captured([L|_]). 
@@ -134,7 +136,23 @@ free(X,Y) :- not(piece(_,_,X,Y,_)).
 %diapo101 du poly
 
 %predicat board
-board([[L,C,X,Y,E]|B]) :- board(B), piece(X,Y,L,C,in|frozen),((E =:= in)|(E=:=frozen)), L=<7, L>=0, C=<7, L>=0, not trap(X,Y), free(L,C).  
+board([[L,C,X,Y,E]|B]) :- board(B), piece(X,Y,L,C,in|frozen),((E =:= in)|(E=:=frozen)), L=<7, L>=0, C=<7, L>=0, not(trap(X,Y)), free(L,C).
+
+%retire l'element de la liste 
+%retireElement(_, [], []).
+%retireElement(X, [X|Q], Q) :- !.
+%retireElement(X, [T|Q], [T|R]) :- retireElement(X, Q, R).
+
+%supp toutes les occurences
+delete([],X,[]). 
+delete([X|Ist],X,SansX) :- delete(Ist,X,SansX).
+delete([X|Ist],Z,[X|AnsX]) :- Z \= X , delete(Ist,Z,AnsX).
+
+%tentative pour faire en sorte que toutes les pieces trap soient éjectées du jeu (donc n'apparaissent plus dans board)
+board(b):-delete([_,_,_,_,out],b1,b), board(b1).
+ 
+
+
  
 %predicat possMove, en supposant silver en haut et gold en bas
 %on ne peut pas bouger les out ou silver
