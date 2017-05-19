@@ -62,18 +62,12 @@ oppSide(gold, silver).
 
 %predicat qui donne la couleur de notre piece ?
 side(X) :- side(silver) | side(gold).
-side(X) :- oppSide(X,_).  
+%side(X) :- oppSide(X,_).  
 
 %Une pièce est définie par un tuple piece(type,side,Lin,Col,Etat), où :
 %  Après en soit "strength" est déterminé par "type" donc devient "inutile"
 % (Col, Lin) est la position de la pièce sur le plateau. (plateau de 8x8)
 %  Etat détermine si la pièce est en jeu, si elle est en jeu et est frozen, ou si elle est hors jeu (dans un piège); Etat peut prendre les valeurs 'in', 'frozen' ou 'out'.
-
-%etat --> faire une transition de in vers out si une piece est dans un trap --> ligne 2(enfin 72 plutôt)
-etat(X) :- etat(in) | etat(frozen) | etat(out).
-piece(X,Y,_,_,out):- (piece(X,Y,_,_,in)|piece(X,Y,_,_,frozen)), trap(X,Y), not(aCote([X,Y],[W,Y])).
-% pas d'accord car si tu as un ami à coté de toi tu ne disparait pas. --> proposition au dessus
-piece(X,Y,_,_,frozen) :- piece(X,Y,_,_,in), frozen(X,Y).
 
 %ici je trouve ça bizarre le position...
 position(X,Y).
@@ -81,11 +75,33 @@ piece(X,Y,L,C,E):-type(X),side(Y),position(L,C),etat(E).
 diffType(X,Y) :- piece(X,A,_,_,_),piece(Y,B,_,_,_),A \= B.
 %ici c'est side différents, si on veut le type diff alors rajouer X\=Y.
 
+%new version :
+%cas dans les angles
+aCote1([X,Y],[U,V]) :- piece(X,Y, 0,0 ,_), piece(U,V,1,1,_)|piece(U,V,0,1,_),!.
+aCote1([X,Y],[U,V]) :- piece(X,Y, 0,7 ,_), piece(U,V,0,6,_)|piece(U,V,1,7,_),!.
+aCote1([X,Y],[U,V]) :- piece(X,Y, 7,7 ,_), piece(U,V,7,6,_)|piece(U,V,6,7,_),!.
+aCote1([X,Y],[U,V]) :- piece(X,Y, 7,0 ,_), piece(U,V,7,1,_)|piece(U,V,6,0,_),!.
+%cas 1ere/derniere ligne/colonne
+aCote1([X,Y],[U,V]) :- piece(X,Y, 0,C ,_), piece(U,V,0,C-1,_)|piece(U,V,0,C+1,_)|piece(U,V,1,C,_),!.
+aCote1([X,Y],[U,V]) :- piece(X,Y, 7,C ,_), piece(U,V,7,C-1,_)|piece(U,V,7,C+1,_)|piece(U,V,6,C,_),!.
+aCote1([X,Y],[U,V]) :- piece(X,Y, L,0 ,_), piece(U,V,L-1,0,_)|piece(U,V,L+1,0,_)|piece(U,V,L,1,_),!.
+aCote1([X,Y],[U,V]) :- piece(X,Y, L,7 ,_), piece(U,V,L-1,7,_)|piece(U,V,L+1,7,_)|piece(U,V,L,6,_),!.
+%cas general
+aCote1([X,Y], [U,V]) :- piece(X,Y,L,C,_),piece(U,V,L+1,C,_)|piece(U,V,L-1,C,_)|piece(U,V,L,C-1,_)|piece(U,V,L,C+1,_), L>=1, C>=1, L=<6, C=<6.
+%autres
+aCote([X,Y],[U,V]) :- aCote1([X,Y],[U,V]). 
+aCote([X,Y],[U,V]) :- aCote1([U,V],[X,Y]).
+
+
+%etat --> faire une transition de in vers out si une piece est dans un trap --> ligne 2(enfin 72 plutôt)
+etat(X) :- etat(in) | etat(frozen) | etat(out).
+piece(X,Y,_,_,out):- (piece(X,Y,_,_,in)|piece(X,Y,_,_,frozen)), trap(X,Y), not(aCote([X,Y],[W,Y])).
+% pas d'accord car si tu as un ami à coté de toi tu ne disparait pas. --> proposition au dessus
+piece(X,Y,_,_,frozen) :- piece(X,Y,_,_,in), frozen(X,Y).
+
+
 %predicat trap
 trap(X,Y) :- piece(X,Y,2,2,_) | piece(X,Y,5,2,_) | piece(X,Y,2,5,_) | piece(X,Y,5,5,_).  
-
-%j'aimerais faire une fonction qui supprime l'élément de board si il est trap (out)
-retireElement
 
 %ajout au tableau des capturés
 captured([[X,Y]|L]) :- trap(X,Y), captured([L|_]). 
@@ -135,9 +151,6 @@ notFree(X,Y) :- piece(_,_,X,Y,_).
 free(X,Y) :- not(piece(_,_,X,Y,_)). 
 %diapo101 du poly
 
-%predicat board
-board([[L,C,X,Y,E]|B]) :- board(B), piece(X,Y,L,C,in|frozen),((E =:= in)|(E=:=frozen)), L=<7, L>=0, C=<7, L>=0, not(trap(X,Y)), free(L,C).
-
 %retire l'element de la liste 
 %retireElement(_, [], []).
 %retireElement(X, [X|Q], Q) :- !.
@@ -148,6 +161,8 @@ delete([],X,[]).
 delete([X|Ist],X,SansX) :- delete(Ist,X,SansX).
 delete([X|Ist],Z,[X|AnsX]) :- Z \= X , delete(Ist,Z,AnsX).
 
+%predicat board
+board([[L,C,X,Y,E]|B]) :- board(B), piece(X,Y,L,C,in|frozen),((E =:= in)|(E=:=frozen)), L=<7, L>=0, C=<7, L>=0, not(trap(X,Y)), free(L,C).
 %tentative pour faire en sorte que toutes les pieces trap soient éjectées du jeu (donc n'apparaissent plus dans board)
 board(b):-delete([_,_,_,_,out],b1,b), board(b1).
  
@@ -163,23 +178,6 @@ possMove(rabbit,silver,[[[L,C],[L+1, C]],[[L,C],[L,C+1]],[[L,C],[L,C-1]]]) :- pi
 possMove(rabbit,gold,[[[L,C],[L-1, C]],[[L,C],[L,C+1]],[[L,C],[L,C-1]]]) :- piece(rabbit,gold,L,C,in), not(board([[_],[L-1,C,_,_,_]],[_]])), not(board([[_],[L,C+1,_,_,_]],[_]]), not(board([[_],[L,C-1,_,_,_]],[_]]).
 possMove(X,Y,[[[L,C],[L-1, C]],[[L,C],[L,C+1]],[[L,C],[L,C-1]],[[L,C],[L+1,C]]]) :- piece(X,Y,L,C,in), X \= rabbit , not(board([[_],[L-1,C,_,_,_]],[_]])), not(board([[_],[L,C+1,_,_,_]],[_]])), not(board([[_],[L,C-1,_,_,_]],[_]])), not(board([[_],[L+1,C,_,_,_]],[_]])). 
 
-
-%new version :
-%cas dans les angles
-aCote1([X,Y],[U,V]) :- piece(X,Y, 0,0 ,_), piece(U,V,1,1,_)|piece(U,V,0,1,_),!.
-aCote1([X,Y],[U,V]) :- piece(X,Y, 0,7 ,_), piece(U,V,0,6,_)|piece(U,V,1,7,_),!.
-aCote1([X,Y],[U,V]) :- piece(X,Y, 7,7 ,_), piece(U,V,7,6,_)|piece(U,V,6,7,_),!.
-aCote1([X,Y],[U,V]) :- piece(X,Y, 7,0 ,_), piece(U,V,7,1,_)|piece(U,V,6,0,_),!.
-%cas 1ere/derniere ligne/colonne
-aCote1([X,Y],[U,V]) :- piece(X,Y, 0,C ,_), piece(U,V,0,C-1,_)|piece(U,V,0,C+1,_)|piece(U,V,1,C,_),!.
-aCote1([X,Y],[U,V]) :- piece(X,Y, 7,C ,_), piece(U,V,7,C-1,_)|piece(U,V,7,C+1,_)|piece(U,V,6,C,_),!.
-aCote1([X,Y],[U,V]) :- piece(X,Y, L,0 ,_), piece(U,V,L-1,0,_)|piece(U,V,L+1,0,_)|piece(U,V,L,1,_),!.
-aCote1([X,Y],[U,V]) :- piece(X,Y, L,7 ,_), piece(U,V,L-1,7,_)|piece(U,V,L+1,7,_)|piece(U,V,L,6,_),!.
-%cas general
-aCote1([X,Y], [U,V]) :- piece(X,Y,L,C,_),piece(U,V,L+1,C,_)|piece(U,V,L-1,C,_)|piece(U,V,L,C-1,_)|piece(U,V,L,C+1,_), L>=1, C>=1, L=<6, C=<6.
-%autres
-aCote([X,Y],[U,V]) :- aCote1([X,Y],[U,V]). 
-aCote([X,Y],[U,V]) :- aCote1([U,V],[X,Y]).
 
 %sens du mouvement demandé
 sens(S) :- sens(gauche) | sens(droite) | sens(bas) | sens(haut). 
