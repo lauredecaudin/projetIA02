@@ -7,7 +7,7 @@
 - Autoriser entre 1 et 4 mouvements //FAIT AVEC remainSteps
 
 - Implémenter Get_moves(Moves, gamestate, board) //C  OK
-- implémenter Move, faire attention à limiter le nb à 4 et à permettre que les mouvements possibles (celui d'en dessous)  //L
+- implémenter Move, faire attention à limiter le nb à 4 et à permettre que les mouvements possibles (celui d'en dessous)  //L je vois pas ce qui faut faire de +
 - implementer un predicat qui donne pour une piece en jeu ses différents mouvements possibles
 (en fonction de son type, des autres pièces du jeu, de si elle est frozen ou pas, etc)  //C   OK
 - implémenter push/pull ? //L  OK
@@ -17,6 +17,8 @@
 - Implémenter le choix libre de placement des pièces au début
 - Faire en sorte que les pieces out soient ejectées du jeu   //voir ce que j'ai fait
 
+---> Dans le ReadMe du projet P16, ils ont mis un identifiant UNIQUE par pièce 
+par exemple ça donnerait pour nos rabbits : R1,R2...R6, t'en penses quoi ? 
 
 Erreurs :
 Syntax error: Illegal start of term
