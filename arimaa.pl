@@ -15,14 +15,9 @@
 % get_moves(Moves, [silver, []], [[0,0,rabbit,silver],[0,1,rabbit,silver],[0,2,horse,silver],[0,3,rabbit,silver],[0,4,elephant,silver],[0,5,rabbit,silver],[0,6,rabbit,silver],[0,7,rabbit,silver],[1,0,camel,silver],[1,1,cat,silver],[1,2,rabbit,silver],[1,3,dog,silver],[1,4,rabbit,silver],[1,5,horse,silver],[1,6,dog,silver],[1,7,cat,silver],[2,7,rabbit,gold],[6,0,cat,gold],[6,1,horse,gold],[6,2,camel,gold],[6,3,elephant,gold],[6,4,rabbit,gold],[6,5,dog,gold],[6,6,rabbit,gold],[7,0,rabbit,gold],[7,1,rabbit,gold],[7,2,rabbit,gold],[7,3,cat,gold],[7,4,dog,gold],[7,5,rabbit,gold],[7,6,horse,gold],[7,7,rabbit,gold]]).
 
 % default call
-%get_moves([[[1,0],[2,0]],[[0,0],[1,0]],[[0,1],[0,0]],[[0,0],[0,1]]], Gamestate, Board).
+get_moves([[[1,0],[2,0]],[[0,0],[1,0]],[[0,1],[0,0]],[[0,0],[0,1]]], Gamestate, Board).
 
 
-% Faut lire le README du Git de P16, ya pleins de prédicats utiles dont on pourrait peut être s'inspirer*/ 
-%https://github.com/vincebhx/IA02-Khan/blob/master/README.md
-
-%Git du projet*/
-%https://github.com/rlacazel/Prolog-Arimaa  */
 
 
 %predicat not
@@ -60,7 +55,7 @@ side(X) :- side(silver) | side(gold).
 %side(X) :- oppSide(X,_).  
 
 %Une pièce est définie par un tuple piece(type,side,Lin,Col,Etat), où :
-%  Après en soit "strength" est déterminé par "type" donc devient "inutile"
+%  Après en soit trength est déterminé par type donc devient inutile
 % (Col, Lin) est la position de la pièce sur le plateau. (plateau de 8x8)
 %  Etat détermine si la pièce est en jeu, si elle est en jeu et est , ou si elle est hors jeu (dans un piège); Etat peut prendre les valeurs 'in', 'frozen' ou 'out'.
 
@@ -68,7 +63,7 @@ side(X) :- side(silver) | side(gold).
 position(X,Y).
 piece(X,Y,L,C,E):-type(X),side(Y),position(L,C),etat(E).
 diffType(X,Y) :- piece(X,A,_,_,_),piece(Y,B,_,_,_),A \= B.
-%ici c'est side différents, si on veut le type diff alors rajouer X\=Y.
+%ici cest side différents, si on veut le type diff alors rajouer X\=Y.
 
 %new version :
 %cas dans les angles
@@ -76,7 +71,7 @@ aCote1([X,Y],[U,V]) :- piece(X,Y, 0,0 ,_), piece(U,V,1,1,_)|piece(U,V,0,1,_),!.
 aCote1([X,Y],[U,V]) :- piece(X,Y, 0,7 ,_), piece(U,V,0,6,_)|piece(U,V,1,7,_),!.
 aCote1([X,Y],[U,V]) :- piece(X,Y, 7,7 ,_), piece(U,V,7,6,_)|piece(U,V,6,7,_),!.
 aCote1([X,Y],[U,V]) :- piece(X,Y, 7,0 ,_), piece(U,V,7,1,_)|piece(U,V,6,0,_),!.
-%cas 1ere/derniere ligne/colonne
+%cas 1erederniere ligne colonne
 aCote1([X,Y],[U,V]) :- piece(X,Y, 0,C ,_), piece(U,V,0,C-1,_)|piece(U,V,0,C+1,_)|piece(U,V,1,C,_),!.
 aCote1([X,Y],[U,V]) :- piece(X,Y, 7,C ,_), piece(U,V,7,C-1,_)|piece(U,V,7,C+1,_)|piece(U,V,6,C,_),!.
 aCote1([X,Y],[U,V]) :- piece(X,Y, L,0 ,_), piece(U,V,L-1,0,_)|piece(U,V,L+1,0,_)|piece(U,V,L,1,_),!.
@@ -115,9 +110,9 @@ captured([[X,Y]|L]) :- trap(X,Y), captured([L|_]).
 %rabbits : peuvent pas backward
 %Pas possible de faire un tour où tout revient à la même position que au début du tour
 %Entre 1 et 4 steps par tour
-%push/pull = 2 steps : by a stronger to a weaker opponent's piece
-%* A stronger piece can also freeze any opponent's piece that is weaker than it. 
-%A piece which is next to an opponent's stronger piece is considered to be frozen and cannot move on its own; 
+%push/pull = 2 steps : by a stronger to a weaker opponents piece
+%* A stronger piece can also freeze any opponents piece that is weaker than it. 
+%A piece which is next to an opponents stronger piece is considered to be frozen and cannot move on its own; 
 %though it can be pushed or pulled by opponents stronger pieces. 
 %However if there is a friendly piece next to it the piece is unfrozen and is free to move. 
 %* Idem pour les traps : si il y a une piece amie à côté alors ne tombe pas dans le trou
@@ -136,8 +131,8 @@ captured([[X,Y]|L]) :- trap(X,Y), captured([L|_]).
  % Predicat remainSteps  //pas sure du tout
  remainSteps(0):-!.
  remainSteps(N) :-  N=<4, M is N+1, remainSteps(M).
- % En fait je vois pas l'interet de faire de la récursivité : remainSteps(N) :- N>0,N<=4. 
- % C'est pour pouvoir l'utiliser dans une boucle ou autre, mais t'as peut être raison, ya moyen que ça soit inutile
+ % En fait je vois pas linteret de faire de la récursivité : remainSteps(N) :- N>0,N<=4. 
+ % Cest pour pouvoir lutiliser dans une boucle ou autre, mais tas peut être raison, ya moyen que ça soit inutile
 
 concat([],L,L). 
 concat([X|L1], L2,[X|L3]) :- concat(L1,L2,L3).
@@ -146,44 +141,44 @@ concat([X|L1], L2,[X|L3]) :- concat(L1,L2,L3).
 notFree(X,Y) :- piece(_,_,X,Y,_).
 free(X,Y) :- not(piece(_,_,X,Y,_)). 
 
-%retire l'element de la liste 
+%retire lelement de la liste 
 %retireElement(_, [], []).
 %retireElement(X, [X|Q], Q) :- !.
 %retireElement(X, [T|Q], [T|R]) :- retireElement(X, Q, R).
 
 %supp toutes les occurences
-delete([],X,[]). 
-delete([X|Ist],X,SansX) :- delete(Ist,X,SansX).
-delete([X|Ist],Z,[X|AnsX]) :- Z \= X , delete(Ist,Z,AnsX).
+suppr([],X,[]). 
+suppr([X|Ist],X,SansX) :- suppr(Ist,X,SansX).
+suppr([X|Ist],Z,[X|SansX]) :- Z \= X , suppr(Ist,Z,SansX).
 
 %predicat board
 board([[L,C,X,Y,E]|B]) :- board(B), piece(X,Y,L,C,in|frozen),((E =:= in)|(E=:=frozen)), L=<7, L>=0, C=<7, L>=0, not(trap(X,Y)), free(L,C).
 
-%tentative pour faire en sorte que toutes les pieces trap soient éjectées du jeu (donc n'apparaissent plus dans board)
-board(b):-delete([_,_,_,_,out],b1,b), board(b1).
+%tentative pour faire en sorte que toutes les pieces trap soient éjectées du jeu (donc napparaissent plus dans board)
+%board(b):-suppr([_,_,_,_,out],b1,b), board(b1).
 
 %predicat possMove, en supposant silver en haut et gold en bas
-%on ne peut pas bouger les out ou silver
-%cas special des lapins qui ne peuvent pas aller backward
+%on peut pas bouger les out ou silver
+%cas special des lapins qui peuvent pas aller backward
 
-%j'aurais bien mis des "|" entre les différents "not(board(..))" non ?
-possMove(rabbit,silver,[[[L,C],[L+1, C]],[[L,C],[L,C+1]],[[L,C],[L,C-1]]]) :- piece(rabbit,silver,L,C,in), not(board([[_],[L+1,C,_,_,_]],[_]])), not(board([[_],[L,C+1,_,_,_]],[_]])), not(board([[_],[L,C-1,_,_,_]],[_]])).
-possMove(rabbit,gold,[[[L,C],[L-1, C]],[[L,C],[L,C+1]],[[L,C],[L,C-1]]]) :- piece(rabbit,gold,L,C,in), not(board([[_],[L-1,C,_,_,_]],[_]])), not(board([[_],[L,C+1,_,_,_]],[_]]), not(board([[_],[L,C-1,_,_,_]],[_]]).
-possMove(X,Y,[[[L,C],[L-1, C]],[[L,C],[L,C+1]],[[L,C],[L,C-1]],[[L,C],[L+1,C]]]) :- piece(X,Y,L,C,in), X \= rabbit , not(board([[_],[L-1,C,_,_,_]],[_]])), not(board([[_],[L,C+1,_,_,_]],[_]])), not(board([[_],[L,C-1,_,_,_]],[_]])), not(board([[_],[L+1,C,_,_,_]],[_]])). 
+%jaurais bien mis des | entre les différents not(board(..)) non ?
+possMove(rabbit,silver,[[[L,C],[L+1, C]],[[L,C],[L,C+1]],[[L,C],[L,C-1]]]) :- piece(rabbit,silver,L,C,in), \+ board([_,[L+1,C,_,_,_],_]), \+ board([_,[L,C+1,_,_,_],_]), \+ board([_,[L,C-1,_,_,_],_]).
+possMove(rabbit,gold,[[[L,C],[L-1, C]],[[L,C],[L,C+1]],[[L,C],[L,C-1]]]) :- piece(rabbit,gold,L,C,in), \+ board([_,[L-1,C,_,_,_],_]), \+ board([_,[L,C+1,_,_,_],_]), \+ board([_,[L,C-1,_,_,_],_]).
+possMove(X,Y,[[[L,C],[L-1, C]],[[L,C],[L,C+1]],[[L,C],[L,C-1]],[[L,C],[L+1,C]]]) :- piece(X,Y,L,C,in), X \= rabbit , \+ board([_,[L-1,C,_,_,_],_]), \+ board([_,[L,C+1,_,_,_],_]), \+ board([_,[L,C-1,_,_,_],_]), \+ board([_,[L+1,C,_,_,_],_]). 
 
 %sens du mouvement demandé
 sens(S) :- sens(gauche) | sens(droite) | sens(bas) | sens(haut). 
 
 % X : pièce poussant(son type), W : pièce poussée(son type), N : nombre de coup restant, (L, C) :position de la piece à pousser
-%j'ai mis >=2 plutôt
-%j'ai rajouté les contraintes pour que le voisin soit pas hors_board
+%jai mis >=2 plutôt
+%jai rajouté les contraintes pour que le voisin soit pas hors_board
 possPush(X,silver,W,N,L,C,S) :- N>=2,((free(L+1,C),sens(bas), L+1=<7)|(free(L,C+1),sens(droite), C+1=<7)|(free(L,C-1),sens(gauche), C-1>=0)|(free(L-1,C),sens(haut), L-1>=0)),piece(W,gold,L,C,in),aCote(X,W),inf(W,X). 
 possPush(X,gold,W,N,L,C,S) :- N>=2,((free(L+1,C),sens(bas), L+1=<7)|(free(L,C+1),sens(droite),C+1=<7)|(free(L,C-1),sens(gauche), C-1>=0)|(free(L-1,C),sens(haut), L-1>=0)),piece(W,silver,L,C,in),aCote(X,W),inf(W,X).
 
-%Comment appliquer le mouvement ? Vraiment pas sure de ce qui suit, parce qu'on ne demande pas si l'utilisateur VEUT déplacer la pièce
-%comment changer l'état ?
-%je pense qu'on peut utiliser oppSide() au lieu de toujours utiliser silver ou gold et faire 15 lignes, à voir demain
-%J'ai fait un predicat qui normalement change l'état automatiquement (cf plus haut l. 72)
+%Comment appliquer le mouvement ? Vraiment pas sure de ce qui suit, parce quon ne demande pas si lutilisateur VEUT déplacer la pièce
+%comment changer létat ?
+%je pense quon peut utiliser oppSide() au lieu de toujours utiliser silver ou gold et faire 15 lignes, à voir demain
+%Jai fait un predicat qui normalement change létat automatiquement (cf plus haut l. 72)
 
 %piece(W,gold,L2,C,_) :- possPush(X,silver,W,N,L,C,bas), L2 is L+1. 
 %piece(X,silver,L,C,_) :- possPush(X,silver,W,N,L,C,bas). 
