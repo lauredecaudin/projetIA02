@@ -74,14 +74,14 @@ aCote1([X,Y],[U,V]) :- piece(X,Y, 0,C ,_), piece(U,V,0,C-1,_).
 aCote1([X,Y],[U,V]) :- piece(X,Y, 0,C ,_), piece(U,V,0,C+1,_).
 aCote1([X,Y],[U,V]) :- piece(X,Y, 0,C ,_), piece(U,V,1,C,_).
 aCote1([X,Y],[U,V]) :- piece(X,Y, 7,C ,_), piece(U,V,7,C-1,_).
-aCote1([X,Y],[U,V]) :- piece(X,Y, 7,C ,_),piece(U,V,7,C+1,_).
-aCote1([X,Y],[U,V]) :- piece(X,Y, 7,C ,_),piece(U,V,6,C,_).
+aCote1([X,Y],[U,V]) :- piece(X,Y, 7,C ,_), piece(U,V,7,C+1,_).
+aCote1([X,Y],[U,V]) :- piece(X,Y, 7,C ,_), piece(U,V,6,C,_).
 aCote1([X,Y],[U,V]) :- piece(X,Y, L,0 ,_), piece(U,V,L-1,0,_).
-aCote1([X,Y],[U,V]) :- piece(X,Y, L,0 ,_),piece(U,V,L+1,0,_).
-aCote1([X,Y],[U,V]) :- piece(X,Y, L,0 ,_),piece(U,V,L,1,_).
+aCote1([X,Y],[U,V]) :- piece(X,Y, L,0 ,_), piece(U,V,L+1,0,_).
+aCote1([X,Y],[U,V]) :- piece(X,Y, L,0 ,_), piece(U,V,L,1,_).
 aCote1([X,Y],[U,V]) :- piece(X,Y, L,7 ,_), piece(U,V,L-1,7,_).
-aCote1([X,Y],[U,V]) :- piece(X,Y, L,7 ,_),piece(U,V,L+1,7,_).
-aCote1([X,Y],[U,V]) :- piece(X,Y, L,7 ,_),piece(U,V,L,6,_).
+aCote1([X,Y],[U,V]) :- piece(X,Y, L,7 ,_), piece(U,V,L+1,7,_).
+aCote1([X,Y],[U,V]) :- piece(X,Y, L,7 ,_), piece(U,V,L,6,_).
 %cas general
 aCote1([X,Y], [U,V]) :- L>=1, C>=1, L=<6, C=<6, piece(X,Y,L,C,_),piece(U,V,L+1,C,_).
 aCote1([X,Y], [U,V]) :- L>=1, C>=1, L=<6, C=<6, piece(X,Y,L,C,_),piece(U,V,L-1,C,_).
@@ -94,7 +94,7 @@ aCote([X,Y],[U,V]) :- aCote1([U,V],[X,Y]).
 
 
 %frozen
-frozen(X,W) :- aCote([X,W],[Y,Z]), inf(X,Y), piece(X,W,_,_,in), piece(Y,Z,_,_,in), W \= Z, not(aCote([X,W],[A,W])).
+frozen(X,W) :- aCote([X,W],[Y,Z]), inf(X,Y), piece(X,W,_,_,in), piece(Y,Z,_,_,in), W \= Z, \+ aCote([X,W],[A,W]).
 
 %ajout au tableau des frozen
 frozenTab([[X,Y]|L]) :- piece(X,Y,_,_,frozen), frozenTab(L).
@@ -102,8 +102,8 @@ frozenTab([[X,Y]|L]) :- piece(X,Y,_,_,frozen), frozenTab(L).
 %etat --> faire une transition de in vers out si une piece est dans un trap --> ligne 2(enfin 72 plutôt)
 
 
-piece(X,Y,_,_,out):- trap(X,Y), not(aCote([X,Y],[W,Y])), piece(X,Y,_,_,in).
-piece(X,Y,_,_,out):- trap(X,Y), not(aCote([X,Y],[W,Y])), piece(X,Y,_,_,frozen).
+piece(X,Y,_,_,out):- trap(X,Y), \+ aCote([X,Y],[W,Y]), piece(X,Y,_,_,in).
+piece(X,Y,_,_,out):- trap(X,Y), \+ aCote([X,Y],[W,Y]), piece(X,Y,_,_,frozen).
 piece(X,Y,_,_,frozen) :- frozen(X,Y), piece(X,Y,_,_,in).
 
 
@@ -114,9 +114,7 @@ trap(X,Y) :- piece(X,Y,2,5,_).
 trap(X,Y) :- piece(X,Y,5,5,_).  
 
 %ajout au tableau des capturés
-captured([[X,Y]|L]) :- trap(X,Y), captured([L|_]). 
-
-
+captured([[X,Y]|L]) :- trap(X,Y), captured(L). 
 
 %commentaires pour les déplacements
 %Pour les pièces 4 directions possibles : forward, backward, left and right
@@ -138,12 +136,12 @@ captured([[X,Y]|L]) :- trap(X,Y), captured([L|_]).
     
     
  % Predicat gamestate
- gamestate(X, Y, Z, U) :-  U=<4,captured(Y), frozenTab(Z), remainSteps(U).
+ gamestate(X, Y, Z, U) :-  U=<4 ,captured(Y), frozenTab(Z), remainSteps(U).
  % Les pièces capturées et frozen sont des listes?  La réponse est oui, en tout cas cest comme ça que je lai codé
  
  % Predicat remainSteps  //pas sure du tout
  remainSteps(0):-!.
- remainSteps(N) :-  N=<4, M is N+1, remainSteps(M).
+ remainSteps(N) :-  N=<4, M is N-1, remainSteps(M).
  % En fait je vois pas linteret de faire de la récursivité : remainSteps(N) :- N>0,N<=4. 
  % Cest pour pouvoir lutiliser dans une boucle ou autre, mais tas peut être raison, ya moyen que ça soit inutile
 
@@ -151,8 +149,7 @@ concat([],L,L).
 concat([X|L1], L2,[X|L3]) :- concat(L1,L2,L3).
 
 %prédicat Free (place libre) 
-notFree(X,Y) :- piece(_,_,X,Y,_).
-free(X,Y) :- not(piece(_,_,X,Y,_)). 
+free(X,Y) :- \+ piece(_,_,X,Y,_). 
 
 %retire lelement de la liste 
 %retireElement(_, [], []).
