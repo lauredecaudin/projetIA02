@@ -15,7 +15,7 @@
 % get_moves(Moves, [silver, []], [[0,0,rabbit,silver],[0,1,rabbit,silver],[0,2,horse,silver],[0,3,rabbit,silver],[0,4,elephant,silver],[0,5,rabbit,silver],[0,6,rabbit,silver],[0,7,rabbit,silver],[1,0,camel,silver],[1,1,cat,silver],[1,2,rabbit,silver],[1,3,dog,silver],[1,4,rabbit,silver],[1,5,horse,silver],[1,6,dog,silver],[1,7,cat,silver],[2,7,rabbit,gold],[6,0,cat,gold],[6,1,horse,gold],[6,2,camel,gold],[6,3,elephant,gold],[6,4,rabbit,gold],[6,5,dog,gold],[6,6,rabbit,gold],[7,0,rabbit,gold],[7,1,rabbit,gold],[7,2,rabbit,gold],[7,3,cat,gold],[7,4,dog,gold],[7,5,rabbit,gold],[7,6,horse,gold],[7,7,rabbit,gold]]).
 
 % default call
-get_moves([[[1,0],[2,0]],[[0,0],[1,0]],[[0,1],[0,0]],[[0,0],[0,1]]], Gamestate, Board).
+%get_moves([[[1,0],[2,0]],[[0,0],[1,0]],[[0,1],[0,0]],[[0,0],[0,1]]], Gamestate, Board).
 
 
 
@@ -43,16 +43,10 @@ strength(camel, 5).
 strength(elephant, 6).
 
 
-%predicat type
-type(X) :- type(rabbit) | type(cat) | type(dog) | type(horse) | type(camel) | type(elephant).
-
 %Petit prédicat pour trouver le joueur adverse*/
 oppSide(silver, gold).
 oppSide(gold, silver).
 
-%predicat qui donne la couleur de notre piece ?
-side(X) :- side(silver) | side(gold).
-%side(X) :- oppSide(X,_).  
 
 %Une pièce est définie par un tuple piece(type,side,Lin,Col,Etat), où :
 %  Après en soit trength est déterminé par type donc devient inutile
@@ -61,23 +55,38 @@ side(X) :- side(silver) | side(gold).
 
 %ici je trouve ça bizarre le position...
 position(X,Y).
-piece(X,Y,L,C,E):-type(X),side(Y),position(L,C),etat(E).
+piece(X,Y,L,C,E).
 diffType(X,Y) :- piece(X,A,_,_,_),piece(Y,B,_,_,_),A \= B.
 %ici cest side différents, si on veut le type diff alors rajouer X\=Y.
 
 %new version :
 %cas dans les angles
-aCote1([X,Y],[U,V]) :- piece(X,Y, 0,0 ,_), piece(U,V,1,1,_)|piece(U,V,0,1,_),!.
-aCote1([X,Y],[U,V]) :- piece(X,Y, 0,7 ,_), piece(U,V,0,6,_)|piece(U,V,1,7,_),!.
-aCote1([X,Y],[U,V]) :- piece(X,Y, 7,7 ,_), piece(U,V,7,6,_)|piece(U,V,6,7,_),!.
-aCote1([X,Y],[U,V]) :- piece(X,Y, 7,0 ,_), piece(U,V,7,1,_)|piece(U,V,6,0,_),!.
+aCote1([X,Y],[U,V]) :- piece(X,Y, 0,0 ,_), piece(U,V,1,1,_).
+aCote1([X,Y],[U,V]) :- piece(X,Y, 0,0 ,_), piece(U,V,0,1,_).
+aCote1([X,Y],[U,V]) :- piece(X,Y, 0,7 ,_), piece(U,V,0,6,_).
+aCote1([X,Y],[U,V]) :- piece(X,Y, 0,7 ,_), piece(U,V,1,7,_).
+aCote1([X,Y],[U,V]) :- piece(X,Y, 7,7 ,_), piece(U,V,7,6,_).
+aCote1([X,Y],[U,V]) :- piece(X,Y, 7,7 ,_), piece(U,V,6,7,_).
+aCote1([X,Y],[U,V]) :- piece(X,Y, 7,0 ,_), piece(U,V,7,1,_).
+aCote1([X,Y],[U,V]) :- piece(X,Y, 7,0 ,_), piece(U,V,6,0,_).
 %cas 1erederniere ligne colonne
-aCote1([X,Y],[U,V]) :- piece(X,Y, 0,C ,_), piece(U,V,0,C-1,_)|piece(U,V,0,C+1,_)|piece(U,V,1,C,_),!.
-aCote1([X,Y],[U,V]) :- piece(X,Y, 7,C ,_), piece(U,V,7,C-1,_)|piece(U,V,7,C+1,_)|piece(U,V,6,C,_),!.
-aCote1([X,Y],[U,V]) :- piece(X,Y, L,0 ,_), piece(U,V,L-1,0,_)|piece(U,V,L+1,0,_)|piece(U,V,L,1,_),!.
-aCote1([X,Y],[U,V]) :- piece(X,Y, L,7 ,_), piece(U,V,L-1,7,_)|piece(U,V,L+1,7,_)|piece(U,V,L,6,_),!.
+aCote1([X,Y],[U,V]) :- piece(X,Y, 0,C ,_), piece(U,V,0,C-1,_).
+aCote1([X,Y],[U,V]) :- piece(X,Y, 0,C ,_), piece(U,V,0,C+1,_).
+aCote1([X,Y],[U,V]) :- piece(X,Y, 0,C ,_), piece(U,V,1,C,_).
+aCote1([X,Y],[U,V]) :- piece(X,Y, 7,C ,_), piece(U,V,7,C-1,_).
+aCote1([X,Y],[U,V]) :- piece(X,Y, 7,C ,_),piece(U,V,7,C+1,_).
+aCote1([X,Y],[U,V]) :- piece(X,Y, 7,C ,_),piece(U,V,6,C,_).
+aCote1([X,Y],[U,V]) :- piece(X,Y, L,0 ,_), piece(U,V,L-1,0,_).
+aCote1([X,Y],[U,V]) :- piece(X,Y, L,0 ,_),piece(U,V,L+1,0,_).
+aCote1([X,Y],[U,V]) :- piece(X,Y, L,0 ,_),piece(U,V,L,1,_).
+aCote1([X,Y],[U,V]) :- piece(X,Y, L,7 ,_), piece(U,V,L-1,7,_).
+aCote1([X,Y],[U,V]) :- piece(X,Y, L,7 ,_),piece(U,V,L+1,7,_).
+aCote1([X,Y],[U,V]) :- piece(X,Y, L,7 ,_),piece(U,V,L,6,_).
 %cas general
-aCote1([X,Y], [U,V]) :- piece(X,Y,L,C,_),piece(U,V,L+1,C,_)|piece(U,V,L-1,C,_)|piece(U,V,L,C-1,_)|piece(U,V,L,C+1,_), L>=1, C>=1, L=<6, C=<6.
+aCote1([X,Y], [U,V]) :- L>=1, C>=1, L=<6, C=<6, piece(X,Y,L,C,_),piece(U,V,L+1,C,_).
+aCote1([X,Y], [U,V]) :- L>=1, C>=1, L=<6, C=<6, piece(X,Y,L,C,_),piece(U,V,L-1,C,_).
+aCote1([X,Y], [U,V]) :- L>=1, C>=1, L=<6, C=<6, piece(X,Y,L,C,_),piece(U,V,L,C-1,_).
+aCote1([X,Y], [U,V]) :- L>=1, C>=1, L=<6, C=<6, piece(X,Y,L,C,_),piece(U,V,L,C+1,_). 
 %autres
 aCote([X,Y],[U,V]) :- aCote1([X,Y],[U,V]). 
 aCote([X,Y],[U,V]) :- aCote1([U,V],[X,Y]).
@@ -92,13 +101,17 @@ frozenTab([[X,Y]|L]) :- piece(X,Y,_,_,frozen), frozenTab(L).
 
 %etat --> faire une transition de in vers out si une piece est dans un trap --> ligne 2(enfin 72 plutôt)
 
-etat(X) :- etat(in) | etat(frozen) | etat(out).
-piece(X,Y,_,_,out):- (piece(X,Y,_,_,in)|piece(X,Y,_,_,frozen)), trap(X,Y), not(aCote([X,Y],[W,Y])).
-piece(X,Y,_,_,frozen) :- piece(X,Y,_,_,in), frozen(X,Y).
+
+piece(X,Y,_,_,out):- trap(X,Y), not(aCote([X,Y],[W,Y])), piece(X,Y,_,_,in).
+piece(X,Y,_,_,out):- trap(X,Y), not(aCote([X,Y],[W,Y])), piece(X,Y,_,_,frozen).
+piece(X,Y,_,_,frozen) :- frozen(X,Y), piece(X,Y,_,_,in).
 
 
 %predicat trap
-trap(X,Y) :- piece(X,Y,2,2,_) | piece(X,Y,5,2,_) | piece(X,Y,2,5,_) | piece(X,Y,5,5,_).  
+trap(X,Y) :- piece(X,Y,2,2,_). 
+trap(X,Y) :- piece(X,Y,5,2,_).
+trap(X,Y) :- piece(X,Y,2,5,_).
+trap(X,Y) :- piece(X,Y,5,5,_).  
 
 %ajout au tableau des capturés
 captured([[X,Y]|L]) :- trap(X,Y), captured([L|_]). 
@@ -125,8 +138,8 @@ captured([[X,Y]|L]) :- trap(X,Y), captured([L|_]).
     
     
  % Predicat gamestate
- gamestate(X, Y, Z, U) :- side(X), captured(Y), frozenTab(Z), remainSteps(U), U=<4.
- % Les pièces capturées et frozen sont des listes?  La réponse est oui, en tout cas c'est comme ça que je l'ai codé
+ gamestate(X, Y, Z, U) :-  U=<4,captured(Y), frozenTab(Z), remainSteps(U).
+ % Les pièces capturées et frozen sont des listes?  La réponse est oui, en tout cas cest comme ça que je lai codé
  
  % Predicat remainSteps  //pas sure du tout
  remainSteps(0):-!.
@@ -152,7 +165,9 @@ suppr([X|Ist],X,SansX) :- suppr(Ist,X,SansX).
 suppr([X|Ist],Z,[X|SansX]) :- Z \= X , suppr(Ist,Z,SansX).
 
 %predicat board
-board([[L,C,X,Y,E]|B]) :- board(B), piece(X,Y,L,C,in|frozen),((E =:= in)|(E=:=frozen)), L=<7, L>=0, C=<7, L>=0, not(trap(X,Y)), free(L,C).
+board([[L,C,X,Y,in]|B]) :- piece(X,Y,L,C,in), L=<7, L>=0, C=<7, L>=0, not(trap(X,Y)), free(L,C), board(B). 
+board([[L,C,X,Y,frozen]|B]) :- piece(X,Y,L,C,frozen), L=<7, L>=0, C=<7, L>=0, not(trap(X,Y)), free(L,C), board(B). 
+
 
 %tentative pour faire en sorte que toutes les pieces trap soient éjectées du jeu (donc napparaissent plus dans board)
 %board(b):-suppr([_,_,_,_,out],b1,b), board(b1).
@@ -162,18 +177,35 @@ board([[L,C,X,Y,E]|B]) :- board(B), piece(X,Y,L,C,in|frozen),((E =:= in)|(E=:=fr
 %cas special des lapins qui peuvent pas aller backward
 
 %jaurais bien mis des | entre les différents not(board(..)) non ?
-possMove(rabbit,silver,[[[L,C],[L+1, C]],[[L,C],[L,C+1]],[[L,C],[L,C-1]]]) :- piece(rabbit,silver,L,C,in), \+ board([_,[L+1,C,_,_,_],_]), \+ board([_,[L,C+1,_,_,_],_]), \+ board([_,[L,C-1,_,_,_],_]).
-possMove(rabbit,gold,[[[L,C],[L-1, C]],[[L,C],[L,C+1]],[[L,C],[L,C-1]]]) :- piece(rabbit,gold,L,C,in), \+ board([_,[L-1,C,_,_,_],_]), \+ board([_,[L,C+1,_,_,_],_]), \+ board([_,[L,C-1,_,_,_],_]).
-possMove(X,Y,[[[L,C],[L-1, C]],[[L,C],[L,C+1]],[[L,C],[L,C-1]],[[L,C],[L+1,C]]]) :- piece(X,Y,L,C,in), X \= rabbit , \+ board([_,[L-1,C,_,_,_],_]), \+ board([_,[L,C+1,_,_,_],_]), \+ board([_,[L,C-1,_,_,_],_]), \+ board([_,[L+1,C,_,_,_],_]). 
+possMove(_,_,[]).
+possMove(rabbit,silver,[[[L,C],[L+1, C]]|Res]) :- piece(rabbit,silver,L,C,in), \+ board([_,[L+1,C,_,_,_],_]), possMove(rabbit, silver, Res).
+possMove(rabbit,silver,[[[L,C],[L,C+1]]|Res]) :- piece(rabbit,silver,L,C,in), \+ board([_,[L,C+1,_,_,_],_]), possMove(rabbit, silver, Res).
+possMove(rabbit,silver,[[[L,C],[L,C-1]]|Res]) :- piece(rabbit,silver,L,C,in), \+ board([_,[L,C-1,_,_,_],_]), possMove(rabbit, silver, Res).
+possMove(rabbit,gold,[[[L,C],[L-1, C]]|Res]) :- piece(rabbit,gold,L,C,in), \+ board([_,[L-1,C,_,_,_],_]), possMove(rabbit, gold, Res).
+possMove(rabbit,gold,[[[L,C],[L,C+1]]|Res]) :- piece(rabbit,gold,L,C,in),\+ board([_,[L,C+1,_,_,_],_]), possMove(rabbit, gold, Res).
+possMove(rabbit,gold,[[[L,C],[L,C-1]]|Res]) :- piece(rabbit,gold,L,C,in), \+ board([_,[L,C-1,_,_,_],_]), possMove(rabbit, gold, Res).
+possMove(X,Y,[[[L,C],[L-1, C]]|Res]) :- piece(X,Y,L,C,in), X \= rabbit , \+ board([_,[L-1,C,_,_,_],_]), possMove(X,Y,Res).
+possMove(X,Y,[[[L,C],[L,C+1]]|Res]) :- piece(X,Y,L,C,in), X \= rabbit , \+ board([_,[L,C+1,_,_,_],_]), possMove(X,Y, Res).
+possMove(X,Y,[[[L,C],[L,C-1]]|Res]) :- piece(X,Y,L,C,in), X \= rabbit , \+ board([_,[L,C-1,_,_,_],_]), possMove(X,Y, Res).
+possMove(X,Y,[[[L,C],[L+1,C]]|Res]) :- piece(X,Y,L,C,in), X \= rabbit , \+ board([_,[L+1,C,_,_,_],_]), possMove(X,Y, Res). 
 
 %sens du mouvement demandé
-sens(S) :- sens(gauche) | sens(droite) | sens(bas) | sens(haut). 
+sens(S) :- sens(gauche).
+sens(S) :- sens(droite).
+sens(S) :- sens(bas).
+sens(S) :- sens(haut). 
 
 % X : pièce poussant(son type), W : pièce poussée(son type), N : nombre de coup restant, (L, C) :position de la piece à pousser
-%jai mis >=2 plutôt
-%jai rajouté les contraintes pour que le voisin soit pas hors_board
-possPush(X,silver,W,N,L,C,S) :- N>=2,((free(L+1,C),sens(bas), L+1=<7)|(free(L,C+1),sens(droite), C+1=<7)|(free(L,C-1),sens(gauche), C-1>=0)|(free(L-1,C),sens(haut), L-1>=0)),piece(W,gold,L,C,in),aCote(X,W),inf(W,X). 
-possPush(X,gold,W,N,L,C,S) :- N>=2,((free(L+1,C),sens(bas), L+1=<7)|(free(L,C+1),sens(droite),C+1=<7)|(free(L,C-1),sens(gauche), C-1>=0)|(free(L-1,C),sens(haut), L-1>=0)),piece(W,silver,L,C,in),aCote(X,W),inf(W,X).
+%choix du sens
+possPush(X,silver,W,N,L,C,S) :- N>=2, (L+1)=<7, free(L+1,C),sens(bas), piece(W,gold,L,C,in),aCote(X,W),inf(W,X).
+possPush(X,silver,W,N,L,C,S) :- N>=2, (C+1)=<7,free(L,C+1),sens(droite), piece(W,gold,L,C,in),aCote(X,W),inf(W,X).
+possPush(X,silver,W,N,L,C,S) :- N>=2,(C-1)>=0,free(L,C-1),sens(gauche),  piece(W,gold,L,C,in),aCote(X,W),inf(W,X).
+possPush(X,silver,W,N,L,C,S) :- N>=2, (L-1)>=0, free(L-1,C),sens(haut),  piece(W,gold,L,C,in),aCote(X,W),inf(W,X).
+
+possPush(X,gold,W,N,L,C,S) :- N>=2, (L+1)=<7, free(L+1,C),sens(bas), piece(W,silver,L,C,in),aCote(X,W),inf(W,X).
+possPush(X,gold,W,N,L,C,S) :- N>=2, (C+1)=<7, free(L,C+1),sens(droite) ,piece(W,silver,L,C,in),aCote(X,W),inf(W,X).
+possPush(X,gold,W,N,L,C,S) :- N>=2, (C-1)>=0, free(L,C-1),sens(gauche)  ,piece(W,silver,L,C,in),aCote(X,W),inf(W,X).
+possPush(X,gold,W,N,L,C,S) :- N>=2, (L-1)>=0, free(L-1,C),sens(haut), piece(W,silver,L,C,in),aCote(X,W),inf(W,X).
 
 %Comment appliquer le mouvement ? Vraiment pas sure de ce qui suit, parce quon ne demande pas si lutilisateur VEUT déplacer la pièce
 %comment changer létat ?
@@ -219,7 +251,7 @@ possPull(X,gold,W,N,L,C) :- N>=2,piece(W,silver,L,C,in),piece(X,gold,L,C-1,in),f
 
 %predicat Get_Move, on ajoute un move au tableau :
 get_moves(_, [_,_,_,0],_ ):- !.  %si plus de step possible, on arrête
-get_moves([[[L1,C1],[L2,C2]]|L], Gamestate, Board) :- get_moves(L,Gamestate, Board), move([L1,C1],[L2,C2]).
+get_moves([[[L1,C1],[L2,C2]]|L], Gamestate, Board) :-  move([L1,C1],[L2,C2]), get_moves(L,Gamestate, Board).
 
 %predicat move
 %faire un predicat choix pour que le joueur choisisse parmi les possmove et les possPull/possPush et no_move ?
@@ -227,9 +259,16 @@ get_moves([[[L1,C1],[L2,C2]]|L], Gamestate, Board) :- get_moves(L,Gamestate, Boa
 %P1=Position 1 [L1,C1] et P2=Position 2 [L2,C2]
 %mais on peut garder L1,C1 et L2,C2 séparés si on veut
 
-move([L1,C1],[L2,C2]):- possMove(_,_,[[_],[[L1,C1],[L2,C2]],[_]]). %voir comment on dit que [L1,C1],[L2,C2] est un des mouvements possibles de possMove
-move([L1,C1],[L2,C2]) :- ((L=:=L1+1,L2 is L1-1)| (L=:=L1-1,L2 is L1+1)|(C=:=C1+1,C2 is C1-1)|(C=:=C1-1,C2 is C1+1)), possPull(_,_,_,_,L,C).
-move([L1,C1],[L2,C2]) :- ((L=:=L1+1,L2 is L1+1)| (L=:=L1-1,L2 is L1-1)|(C=:=C1+1,C2 is C1+1)|(C=:=C1-1,C2 is C1-1)), possPush(_,_,_,_,L,C,_).
+move([L1,C1],[L2,C2]):- possMove(_,_,[[[L1,C1],[L2,C2]]|Res]). %voir comment on dit que [L1,C1],[L2,C2] est un des mouvements possibles de possMove
+move([L1,C1],[L2,C2]) :- L=:=L1+1,L2 is L1-1, possPull(_,_,_,_,L,C).
+move([L1,C1],[L2,C2]) :-L=:=L1-1,L2 is L1+1, possPull(_,_,_,_,L,C).
+move([L1,C1],[L2,C2]) :- C=:=C1+1,C2 is C1-1, possPull(_,_,_,_,L,C).
+move([L1,C1],[L2,C2]) :- C=:=C1-1,C2 is C1+1, possPull(_,_,_,_,L,C).
+
+move([L1,C1],[L2,C2]) :- L=:=L1+1,L2 is L1+1, possPush(_,_,_,_,L,C,_).
+move([L1,C1],[L2,C2]) :- L=:=L1-1,L2 is L1-1, possPush(_,_,_,_,L,C,_).
+move([L1,C1],[L2,C2]) :- C=:=C1+1,C2 is C1+1, possPush(_,_,_,_,L,C,_).
+move([L1,C1],[L2,C2]) :- C=:=C1-1,C2 is C1-1, possPush(_,_,_,_,L,C,_).
 
 piece(_,_,L2,C2,_) :- move([L1,C1],[L2,C2]), piece(_,_,L1,C1,_). 
 % à la place de tout le reste avec les possPush et PossPull ?
