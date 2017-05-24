@@ -17,7 +17,11 @@
 % default call
 %get_moves([[[1,0],[2,0]],[[0,0],[1,0]],[[0,1],[0,0]],[[0,0],[0,1]]], Gamestate, Board).
 
+% Faut lire le README du Git de P16, ya pleins de prédicats utiles dont on pourrait peut être s'inspirer*/ 
+%https://github.com/vincebhx/IA02-Khan/blob/master/README.md
 
+%Git du projet*/
+%https://github.com/rlacazel/Prolog-Arimaa  */
 
 
 %predicat not
@@ -162,8 +166,8 @@ suppr([X|Ist],X,SansX) :- suppr(Ist,X,SansX).
 suppr([X|Ist],Z,[X|SansX]) :- Z \= X , suppr(Ist,Z,SansX).
 
 %predicat board
-board([[L,C,X,Y,in]|B]) :- piece(X,Y,L,C,in), L=<7, L>=0, C=<7, L>=0, not(trap(X,Y)), free(L,C), board(B). 
-board([[L,C,X,Y,frozen]|B]) :- piece(X,Y,L,C,frozen), L=<7, L>=0, C=<7, L>=0, not(trap(X,Y)), free(L,C), board(B). 
+board([[L,C,X,Y,in]|B]) :- piece(X,Y,L,C,in),  free(L,C), L=<7, L>=0, C=<7, L>=0, not(trap(X,Y)), board(B). 
+board([[L,C,X,Y,frozen]|B]) :- piece(X,Y,L,C,frozen), free(L,C), L=<7, L>=0, C=<7, L>=0, not(trap(X,Y)),  board(B). 
 
 
 %tentative pour faire en sorte que toutes les pieces trap soient éjectées du jeu (donc napparaissent plus dans board)
