@@ -179,7 +179,7 @@ board([[L,C,X,Y,frozen]|B]) :- piece(X,Y,L,C,frozen), free(L,C), L=<7, L>=0, C=<
 
 %jaurais bien mis des | entre les différents not(board(..)) non ?
 possMove(_,_,[]).
-possMove(rabbit,silver,[[[L,C],[L+1, C]]|Res]) :- piece(rabbit,silver,L,C,in), \+ board([_,[L+1,C,_,_,_],_]), possMove(rabbit, silver, Res).
+possMove(rabbit,silver,[[[L,C],[L2, C]]|Res]) :- L2 is L-1, piece(rabbit,silver,L,C,in), \+ board([_,[L2,C,_,_,_],_]), possMove(rabbit, silver, Res).
 possMove(rabbit,silver,[[[L,C],[L,C+1]]|Res]) :- piece(rabbit,silver,L,C,in), \+ board([_,[L,C+1,_,_,_],_]), possMove(rabbit, silver, Res).
 possMove(rabbit,silver,[[[L,C],[L,C-1]]|Res]) :- piece(rabbit,silver,L,C,in), \+ board([_,[L,C-1,_,_,_],_]), possMove(rabbit, silver, Res).
 possMove(rabbit,gold,[[[L,C],[L-1, C]]|Res]) :- piece(rabbit,gold,L,C,in), \+ board([_,[L-1,C,_,_,_],_]), possMove(rabbit, gold, Res).
