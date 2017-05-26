@@ -257,8 +257,9 @@ inserer([X|L]):- asserta(X), inserer(L).
 
 
 %predicat Get_Move, on ajoute un move au tableau :
-moves([]).
+moves([_,_,_,_]):- !.
 moves([[[L1,C1],[L2,C2]]|L]) :- move([L1,C1],[L2,C2]), moves(L).
+
 get_moves(M, Gamestate, Board) :-  retractall(piece(_)), inserer(Board), moves(M).
 %utiliser un predicat tailleListe pour verifier <=4
 
@@ -290,7 +291,7 @@ possmove(_,_,[[[L1,C1],[L2,C2]]|S]) :- L=:=L1+1,L2 is L1+1, possPush(_,_,_,_,L,C
 possmove(_,_,[[[L1,C1],[L2,C2]]|S]) :- L=:=L1-1,L2 is L1-1, possPush(_,_,_,_,L,C,_), possmove(_,_,S),!.
 possmove(_,_,[[[L1,C1],[L2,C2]]|S]) :- C=:=C1+1,C2 is C1+1, possPush(_,_,_,_,L,C,_), possmove(_,_,S),!.
 possmove(_,_,[[[L1,C1],[L2,C2]]|S]) :- C=:=C1-1,C2 is C1-1, possPush(_,_,_,_,L,C,_), possmove(_,_,S), !.
-!
+
 move([L1,C1],[L2,C2]):- possMove(_,_,[[[L1,C1],[L2,C2]]|Res]), !.
 
 piece(L2,C2,_,_) :- move([L1,C1],[L2,C2]), piece(L1,C1,_,_). 
