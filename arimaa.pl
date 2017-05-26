@@ -255,10 +255,13 @@ possPull(X,gold,W,N,L,C) :- N>=2,piece(L, C, W,silver),piece(L, C2, X,gold),free
 inserer([]).
 inserer([X|L]):- asserta(X), inserer(L). 
 
+%predicat pour avoir la taille dune liste
+long([], 0).
+long([_|Q], N) :- long(Q, N1), N is N1 + 1.
 
-%predicat Get_Move, on ajoute un move au tableau :
+%predicat moves on ajoute un move au tableau :
 moves([_,_,_,_]):- !.
-moves([[[L1,C1],[L2,C2]]|L]) :- move([L1,C1],[L2,C2]), moves(L).
+moves([[[L1,C1],[L2,C2]]|L]) :- move([L1,C1],[L2,C2]), long(L, N), N=<3, moves(L).
 
 get_moves(M, Gamestate, Board) :-  retractall(piece(_)), inserer(Board), moves(M).
 %utiliser un predicat tailleListe pour verifier <=4
