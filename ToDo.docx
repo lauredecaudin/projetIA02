@@ -17,12 +17,10 @@
 - Implémenter le choix libre de placement des pièces au début
 - Faire en sorte que les pieces out soient ejectées du jeu   //voir ce que j'ai fait
 
----> Dans le ReadMe du projet P16, ils ont mis un identifiant UNIQUE par pièce 
-par exemple ça donnerait pour nos rabbits : R1,R2...R6, t'en penses quoi ? //The teacher said no
 
 -Chercher une stratégie de jeu :
 https://boardgamegeek.com/thread/110510/arimaa-well-its-way-becoming-classic
 https://en.wikibooks.org/wiki/Arimaa/Introduction_to_Strategy
 
-Erreurs :
-Syntax error: Illegal start of term
+-implémenter NewBoard qui change la position d'une piece dans Board après le choix du premier élément de moves ?
+- Comment faire notre min-max ? Sachant que d'un tour à l'autre il faut évaluer comment va jouer le joueur adverse
