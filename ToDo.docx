@@ -22,5 +22,11 @@
 https://boardgamegeek.com/thread/110510/arimaa-well-its-way-becoming-classic
 https://en.wikibooks.org/wiki/Arimaa/Introduction_to_Strategy
 
+Algo minimax :
+http://www.emse.fr/~picard/cours/ai/minimax/
+
 -implémenter NewBoard qui change la position d'une piece dans Board après le choix du premier élément de moves ?
 - Comment faire notre min-max ? Sachant que d'un tour à l'autre il faut évaluer comment va jouer le joueur adverse
+- supprimer tous les endroits où on a implémenté le code pour l'humain ?
+- Faire les prédicats et algo de décision 
+  --> win(L, C, silver, Board) :- piece(_,_,rabbit,silver), L=:=7, possMove().  //un des lapins silver a atteint la dernière ligne (camp adverse)
