@@ -25,7 +25,8 @@ https://en.wikibooks.org/wiki/Arimaa/Introduction_to_Strategy
 Algo minimax :
 http://www.emse.fr/~picard/cours/ai/minimax/
 
--implémenter NewBoard qui change la position d'une piece dans Board après le choix du premier élément de moves ?
+- Modifier le code pour que on prenne en compte que un possPush ou un possPull implique 2 steps, alors que un autre possMove basique n'en implique que un
+- implémenter NewBoard qui change la position d'une piece dans Board après le choix du premier élément de moves ?
 - Comment faire notre min-max ? Sachant que d'un tour à l'autre il faut évaluer comment va jouer le joueur adverse
 - supprimer tous les endroits où on a implémenté le code pour l'humain ?
 - Faire les prédicats et algo de décision 
