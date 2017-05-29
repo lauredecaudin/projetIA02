@@ -17,8 +17,10 @@
 % default call
 %get_moves([[[1,0],[2,0]],[[0,0],[1,0]],[[0,1],[0,0]],[[0,0],[0,1]]], Gamestate, Board).
 
+% Faut lire le README du Git de P16, ya pleins de prédicats utiles dont on pourrait peut être sinspirer
+%https://github.com/vincebhx/IA02-Khan/blob/master/README.md
 
-%Git du projet*/
+%Git du projet
 %https://github.com/rlacazel/Prolog-Arimaa  
 
 
@@ -26,14 +28,6 @@
 not(P) :- P, !, fail.
 not(P).
 
-% predicat inferiorite
-inf(X,Y) :- inf1(X,Y).
-inf(X,Y) :- inf1(X,Z), inf(Z,Y).
-inf1(rabbit, cat).
-inf1(cat, dog).
-inf1(dog, horse).
-inf1(horse, camel).
-inf1(camel, elephant).
 
 
 %non en fait a part attribuer strength(cat, 2). strength(dog, 3). etc je vois pas
@@ -50,38 +44,61 @@ strength(elephant, 6).
 %oppSide(gold, silver).
 
 %predicat element dune liste
-element(X,[X|_]).
-element(Y,[X|L]) :- X \== Y, element(Y,L).
+element(X,[X|_]):-!.
+element(Y,[X|L]) :- element(Y,L).
 
 
 %new version :
 %cas dans les angles
 aCote1([X,Y],[U,V]) :- piece(0,0, X,Y), piece(1, 1, U,V).
+aCote1([X,Y],[U,V]) :- piece(0,0, X,Y), piece(1, 0, U,V).
 aCote1([X,Y],[U,V]) :- piece(0,0, X,Y), piece(0,1,U,V).
 aCote1([X,Y],[U,V]) :- piece(0,7,X,Y), piece(0,6,U,V).
 aCote1([X,Y],[U,V]) :- piece(0,7,X,Y), piece(1,7,U,V).
+aCote1([X,Y],[U,V]) :- piece(0,7,X,Y), piece(1,6,U,V).
 aCote1([X,Y],[U,V]) :- piece(7,7,X,Y), piece(7,6,U,V).
 aCote1([X,Y],[U,V]) :- piece(7,7,X,Y), piece(6,7,U,V).
+aCote1([X,Y],[U,V]) :- piece(7,7,X,Y), piece(6,6,U,V).
 aCote1([X,Y],[U,V]) :- piece(7,0,X,Y), piece(7,1,U,V).
 aCote1([X,Y],[U,V]) :- piece(7,0,X,Y), piece(6,0,U,V).
+aCote1([X,Y],[U,V]) :- piece(7,0,X,Y), piece(6,1,U,V).
+
 %cas 1erederniere ligne colonne
-aCote1([X,Y],[U,V]) :- piece(0,C,X,Y), piece(0, C-1,U,V).
-aCote1([X,Y],[U,V]) :- piece(0,C, X,Y), piece(0, C+1, U,V).
-aCote1([X,Y],[U,V]) :- piece(0,C, X,Y), piece(1, C, U,V).
-aCote1([X,Y],[U,V]) :- piece(7, C, X,Y), piece(7, C-1, U,V).
-aCote1([X,Y],[U,V]) :- piece(7, C, X,Y), piece(7, C+1, U,V).
+aCote1([X,Y],[U,V]) :- piece(0,C,X,Y), piece(0, C2,U,V), C2 is C-1.  %a gauche
+aCote1([X,Y],[U,V]) :- piece(0,C, X,Y), piece(0, C2, U,V), C2 is C+1.  %a droite
+aCote1([X,Y],[U,V]) :- piece(0,C, X,Y), piece(1, C, U,V). %au dessus
+aCote1([X,Y],[U,V]) :- piece(0,C, X,Y), piece(1, C2, U,V), C2 is C-1. %diago gauche
+aCote1([X,Y],[U,V]) :- piece(0,C, X,Y), piece(1, C2, U,V), C2 is C+1. %diago droite
+
+aCote1([X,Y],[U,V]) :- piece(7, C, X,Y), piece(7, C2, U,V), C2 is C-1.
+aCote1([X,Y],[U,V]) :- piece(7, C, X,Y), piece(7, C2, U,V), C2 is C+1.
 aCote1([X,Y],[U,V]) :- piece(7, C, X,Y), piece(6, C, U,V).
+aCote1([X,Y],[U,V]) :- piece(7, C, X,Y), piece(6, C2, U,V), C2 is C-1.
+aCote1([X,Y],[U,V]) :- piece(7, C, X,Y), piece(6, C2, U,V), C2 is C+1.
+
 aCote1([X,Y],[U,V]) :- piece(L, 0, X,Y), piece(L2, 0, U,V), L2 is L-1.
 aCote1([X,Y],[U,V]) :- piece(L, 0, X,Y), piece(L2, 0, U,V), L2 is L+1.
 aCote1([X,Y],[U,V]) :- piece(L, 0, X,Y), piece(L, 1, U,V).
+aCote1([X,Y],[U,V]) :- piece(L, 0, X,Y), piece(L2, 1, U,V),L2 is L-1.
+aCote1([X,Y],[U,V]) :- piece(L, 0, X,Y), piece(L2, 1, U,V),L2 is L+1.
+
 aCote1([X,Y],[U,V]) :- piece(L, 7, X,Y), piece(L2, 7, U,V), L2 is L-1.
 aCote1([X,Y],[U,V]) :- piece(L, 7, X,Y), piece(L2, 7,U,V), L2 is L+1.
 aCote1([X,Y],[U,V]) :- piece(L, 7, X,Y), piece(L, 6, U,V).
+aCote1([X,Y],[U,V]) :- piece(L, 7, X,Y), piece(L2, 6, U,V), L2 is L-1.
+aCote1([X,Y],[U,V]) :- piece(L, 7, X,Y), piece(L2, 6, U,V), L2 is L+1.
+
 %cas general
 aCote1([X,Y], [U,V]) :- L>=1, C>=1, L=<6, C=<6, piece(L, C, X,Y),piece(L2, C, U,V), L2 is L+1.
 aCote1([X,Y], [U,V]) :- L>=1, C>=1, L=<6, C=<6, piece(L, C, X,Y),piece(L2, C, U,V), L2 is L-1.
 aCote1([X,Y], [U,V]) :- L>=1, C>=1, L=<6, C=<6, piece(L,C, X,Y),piece(L, C2, U,V),C2 is C-1.
 aCote1([X,Y], [U,V]) :- L>=1, C>=1, L=<6, C=<6, piece(L,C,X,Y),piece(L, C2,U,V), C2 is C+1. 
+aCote1([X,Y], [U,V]) :- L>=1, C>=1, L=<6, C=<6, piece(L,C,X,Y),piece(L2, C2,U,V), L2 is L+1, C2 is C+1.
+aCote1([X,Y], [U,V]) :- L>=1, C>=1, L=<6, C=<6, piece(L,C,X,Y),piece(L2, C2,U,V),L2 is L-1, C2 is C+1.
+aCote1([X,Y], [U,V]) :- L>=1, C>=1, L=<6, C=<6, piece(L, C, X,Y),piece(L2, C2, U,V), L2 is L-1, C2 is C-1.
+aCote1([X,Y], [U,V]) :- L>=1, C>=1, L=<6, C=<6, piece(L, C, X,Y),piece(L2, C2, U,V), L2 is L+1, C2 is C-1.
+
+
 %autres
 aCote([X,Y],[U,V]) :- aCote1([X,Y],[U,V]). 
 aCote([X,Y],[U,V]) :- aCote1([U,V],[X,Y]).
@@ -176,24 +193,24 @@ possMove(X,Y,[[[L,C],[L2,C]]|Res]) :- piece(L, C, X,Y), X \= rabbit , \+ board([
 
 % X : pièce poussant(son type), W : pièce poussée(son type), N : nombre de coup restant, (L, C) :position de la piece à pousser
 %choix du sens
-possPush(X,silver,W,N,L,C,S) :- !,N>=2, (L+1)=<7,  free(L2,C), L2 is L+1,sens(bas), piece(L, C, W,gold,L,C,in),aCote(X,W),inf(W,X).
-possPush(X,silver,W,N,L,C,S) :-!, N>=2, (C+1)=<7,  free(L,C2), C2 is C+1,sens(droite), piece(L, C, W, gold),aCote(X,W),inf(W,X).
-possPush(X,silver,W,N,L,C,S) :-!, N>=2,(C-1)>=0,  free(L,C2), C2 is C-1,sens(gauche),  piece(L, C, W, gold),aCote(X,W),inf(W,X).
-possPush(X,silver,W,N,L,C,S) :- !,N>=2, (L-1)>=0,  free(L2,C), L2 is L-1,sens(haut),  piece(L, C, W, gold),aCote(X,W),inf(W,X).
+possPush(X,silver,W,N,L,C,S) :- !,N>=2, (L+1)=<7,  free(L2,C), L2 is L+1,sens(bas), piece(L, C, W,gold,L,C,in),aCote(X,W), strength(W,S1), strength(X,S2), S1<S2.
+possPush(X,silver,W,N,L,C,S) :-!, N>=2, (C+1)=<7,  free(L,C2), C2 is C+1,sens(droite), piece(L, C, W, gold),aCote(X,W), strength(W,S1), strength(X,S2), S1<S2.
+possPush(X,silver,W,N,L,C,S) :-!, N>=2,(C-1)>=0,  free(L,C2), C2 is C-1,sens(gauche),  piece(L, C, W, gold),aCote(X,W),strength(W,S1), strength(X,S2), S1<S2.
+possPush(X,silver,W,N,L,C,S) :- !,N>=2, (L-1)>=0,  free(L2,C), L2 is L-1,sens(haut),  piece(L, C, W, gold),aCote(X,W),strength(W,S1), strength(X,S2), S1<S2.
 
 %Retourne lensemble des mouvements par Push possibles
-possPush(X,gold,W,N,L,C,S) :-!, N>=2, (L+1)=<7,  free(L2,C), L2 is L+1,sens(bas), piece(L, C, W, silver),aCote(X,W),inf(W,X).
-possPush(X,gold,W,N,L,C,S) :-!, N>=2, (C+1)=<7,  free(L,C2), C2 is C+1,sens(droite) ,piece(L, C, W, silver),aCote(X,W),inf(W,X).
-possPush(X,gold,W,N,L,C,S) :-!, N>=2, (C-1)>=0,  free(L,C2), C2 is C-1,sens(gauche)  ,piece(L, C, W, silver),aCote(X,W),inf(W,X).
-possPush(X,gold,W,N,L,C,S) :- !,N>=2, (L-1)>=0,  free(L2,C), L2 is L-1, sens(haut), piece(L, C, W, silver),aCote(X,W),inf(W,X).
+possPush(X,gold,W,N,L,C,S) :-!, N>=2, (L+1)=<7,  free(L2,C), L2 is L+1,sens(bas), piece(L, C, W, silver),aCote(X,W),strength(W,S1), strength(X,S2), S1<S2.
+possPush(X,gold,W,N,L,C,S) :-!, N>=2, (C+1)=<7,  free(L,C2), C2 is C+1,sens(droite) ,piece(L, C, W, silver),aCote(X,W),strength(W,S1), strength(X,S2), S1<S2.
+possPush(X,gold,W,N,L,C,S) :-!, N>=2, (C-1)>=0,  free(L,C2), C2 is C-1,sens(gauche)  ,piece(L, C, W, silver),aCote(X,W),strength(W,S1), strength(X,S2), S1<S2.
+possPush(X,gold,W,N,L,C,S) :- !,N>=2, (L-1)>=0,  free(L2,C), L2 is L-1, sens(haut), piece(L, C, W, silver),aCote(X,W),strength(W,S1), strength(X,S2), S1<S2.
 
 %Retourne lensemble des mouvements par pull possibles
-possPull(X,silver,W,N,L,C) :- N>=2,piece(L, C, W,gold),piece(L2,C,X,silver),free(L3,C), L2 is L-1, L3 is L-2, L-2>=0,inf(W,X). 
-possPull(X,gold,W,N,L,C) :- N>=2,piece(L, C, W,silver),piece(L2,C,X,gold),free(L3,C), L2 is L+1, L3 is L+2, L+2=<7,inf(W,X).
-possPull(X,gold,W,N,L,C) :- N>=2,piece(L, C, W,silver),piece(L,C2,X,gold),free(L,C3), C2 is C+1, C3 is C+2, C+2=<7,inf(W,X).
-possPull(X,gold,W,N,L,C) :- N>=2,piece(L, C, W,silver),piece(L, C2, X,gold),free(L,C3), C2 is C-1, C3 is C-2, C-2>=0,inf(W,X).
+possPull(X,silver,W,N,L,C) :- N>=2,piece(L, C, W,gold),piece(L2,C,X,silver),free(L3,C), L2 is L-1, L3 is L-2, L-2>=0,strength(W,S1), strength(X,S2), S1<S2. 
+possPull(X,gold,W,N,L,C) :- N>=2,piece(L, C, W,silver),piece(L2,C,X,gold),free(L3,C), L2 is L+1, L3 is L+2, L+2=<7,strength(W,S1), strength(X,S2), S1<S2.
+possPull(X,gold,W,N,L,C) :- N>=2,piece(L, C, W,silver),piece(L,C2,X,gold),free(L,C3), C2 is C+1, C3 is C+2, C+2=<7,strength(W,S1), strength(X,S2), S1<S2.
+possPull(X,gold,W,N,L,C) :- N>=2,piece(L, C, W,silver),piece(L, C2, X,gold),free(L,C3), C2 is C-1, C3 is C-2, C-2>=0,strength(W,S1), strength(X,S2), S1<S2.
 
-possmove(_,_,[[[L1,C1],[L2,C2]]|S]) :- L=:=L1+1,L2 is L1-1, possPull(_,_,_,_,L,C), possmove(_,_,S),!.
+possmove(_,_,[[[L1,C1],[L2,C2]]|S]) :- L2 is L1-1, possPull(_,_,_,_,L,C), L=:=L1+1, possmove(_,_,S),!.
 possmove(_,_,[[[L1,C1],[L2,C2]]|S]) :-L=:=L1-1,L2 is L1+1, possPull(_,_,_,_,L,C), possmove(_,_,S),!.
 possmove(_,_,[[[L1,C1],[L2,C2]]|S]):- C=:=C1+1,C2 is C1-1, possPull(_,_,_,_,L,C), possmove(_,_,S),!.
 possmove(_,_,[[[L1,C1],[L2,C2]]|S]) :- C=:=C1-1,C2 is C1+1, possPull(_,_,_,_,L,C), possmove(_,_,S),!.
