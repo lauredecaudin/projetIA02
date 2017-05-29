@@ -280,27 +280,27 @@ retirer(E, [E|Q], Q).
 retirer(E,[T|Q], [T|R]):- retirer(E,Q,R).
 
 %predicat remplacer element 1 par elem2 dans une liste
-remplacer(A,B,L,L2) :- add(A,L,L1), retirer(B,L1,L2)
+remplacer(A,B,L,L2) :- add(A,L,L1), retirer(B,L1,L2).
 
 %prendre en compte que posspush ou possmove choisi implique 2 steps en moins
 %jai rajouté lattribut qui dit nombre de steps déjà fait 
 %predicat où on ajoute un mouvement à la liste 
-moves([], 0):- !.
-moves([[[L1,C1],[L2,C2]]|L], NStepts2) :- retractall(piece(_)), inserer(Board), move([L1,C1],[L2,C2], N), remplacer([L1,C1], [L2,C2], Board, NewBoard), (NSteps+N)=<4, NSteps2 is NSteps + N, (M+N)=<4, moves(L, NSteps).
+moves([], 0, [_]):- !.
+moves([[[L1,C1],[L2,C2]]|L], NStepts2, NewBoard) :- move([L1,C1],[L2,C2], N), element([L1,C1,A,B], Board), remplacer([L1,C1,A,B], [L2,C2,A,B], Board, NewBoard), (NSteps+N)=<4, NSteps2 is NSteps + N, moves(L, NSteps, Board).
 
 
 %predicat get_moves
-get_moves(M, Gamestate, Board) :- moves(M).
+get_moves(M, Gamestate, Board) :- moves(M, NSteps, Board), retractall(piece(_)), inserer(Board).
 
 
 %predicat move
 %faire un predicat choix pour que le joueur choisisse parmi les possmove et les possPull/possPush et no_move ?
 %on est obligé de faire au moins un mouvement
-move([L1,C1],[L2,C2],N):- possMove(_,_,[[[L1,C1],[L2,C2]]|Res], N), !.
+move([L1,C1],[L2,C2],N) :- possMove(_,_,[[[L1,C1],[L2,C2]]|Res], N), !.
 
 
 
-piece(L2,C2,_,_) :- move([L1,C1],[L2,C2], N), piece(L1,C1,_,_). 
+piece(L2,C2,A,B) :- move([L1,C1],[L2,C2], N), piece(L1,C1,A,B). 
 
 
 
