@@ -50,66 +50,73 @@ element(Y,[X|L]) :- element(Y,L).
 
 %new version :
 %cas dans les angles
-aCote1([X,Y],[U,V]) :- piece(0,0, X,Y), piece(1, 1, U,V).
+aCote2([X,Y],[U,V]) :- piece(0,0, X,Y), piece(1, 1, U,V).
 aCote1([X,Y],[U,V]) :- piece(0,0, X,Y), piece(1, 0, U,V).
 aCote1([X,Y],[U,V]) :- piece(0,0, X,Y), piece(0,1,U,V).
 aCote1([X,Y],[U,V]) :- piece(0,7,X,Y), piece(0,6,U,V).
 aCote1([X,Y],[U,V]) :- piece(0,7,X,Y), piece(1,7,U,V).
-aCote1([X,Y],[U,V]) :- piece(0,7,X,Y), piece(1,6,U,V).
+aCote2([X,Y],[U,V]) :- piece(0,7,X,Y), piece(1,6,U,V).
 aCote1([X,Y],[U,V]) :- piece(7,7,X,Y), piece(7,6,U,V).
 aCote1([X,Y],[U,V]) :- piece(7,7,X,Y), piece(6,7,U,V).
-aCote1([X,Y],[U,V]) :- piece(7,7,X,Y), piece(6,6,U,V).
+aCote2([X,Y],[U,V]) :- piece(7,7,X,Y), piece(6,6,U,V).
 aCote1([X,Y],[U,V]) :- piece(7,0,X,Y), piece(7,1,U,V).
 aCote1([X,Y],[U,V]) :- piece(7,0,X,Y), piece(6,0,U,V).
-aCote1([X,Y],[U,V]) :- piece(7,0,X,Y), piece(6,1,U,V).
+aCote2([X,Y],[U,V]) :- piece(7,0,X,Y), piece(6,1,U,V).
 
 %cas 1erederniere ligne colonne
 aCote1([X,Y],[U,V]) :- piece(0,C,X,Y), piece(0, C2,U,V), C2 is C-1.  %a gauche
 aCote1([X,Y],[U,V]) :- piece(0,C, X,Y), piece(0, C2, U,V), C2 is C+1.  %a droite
 aCote1([X,Y],[U,V]) :- piece(0,C, X,Y), piece(1, C, U,V). %au dessus
-aCote1([X,Y],[U,V]) :- piece(0,C, X,Y), piece(1, C2, U,V), C2 is C-1. %diago gauche
-aCote1([X,Y],[U,V]) :- piece(0,C, X,Y), piece(1, C2, U,V), C2 is C+1. %diago droite
+aCote2([X,Y],[U,V]) :- piece(0,C, X,Y), piece(1, C2, U,V), C2 is C-1. %diago gauche
+aCote2([X,Y],[U,V]) :- piece(0,C, X,Y), piece(1, C2, U,V), C2 is C+1. %diago droite
 
 aCote1([X,Y],[U,V]) :- piece(7, C, X,Y), piece(7, C2, U,V), C2 is C-1.
 aCote1([X,Y],[U,V]) :- piece(7, C, X,Y), piece(7, C2, U,V), C2 is C+1.
 aCote1([X,Y],[U,V]) :- piece(7, C, X,Y), piece(6, C, U,V).
-aCote1([X,Y],[U,V]) :- piece(7, C, X,Y), piece(6, C2, U,V), C2 is C-1.
-aCote1([X,Y],[U,V]) :- piece(7, C, X,Y), piece(6, C2, U,V), C2 is C+1.
+aCote2([X,Y],[U,V]) :- piece(7, C, X,Y), piece(6, C2, U,V), C2 is C-1.
+aCote2([X,Y],[U,V]) :- piece(7, C, X,Y), piece(6, C2, U,V), C2 is C+1.
 
 aCote1([X,Y],[U,V]) :- piece(L, 0, X,Y), piece(L2, 0, U,V), L2 is L-1.
 aCote1([X,Y],[U,V]) :- piece(L, 0, X,Y), piece(L2, 0, U,V), L2 is L+1.
 aCote1([X,Y],[U,V]) :- piece(L, 0, X,Y), piece(L, 1, U,V).
-aCote1([X,Y],[U,V]) :- piece(L, 0, X,Y), piece(L2, 1, U,V),L2 is L-1.
-aCote1([X,Y],[U,V]) :- piece(L, 0, X,Y), piece(L2, 1, U,V),L2 is L+1.
+aCote2([X,Y],[U,V]) :- piece(L, 0, X,Y), piece(L2, 1, U,V),L2 is L-1.
+aCote2([X,Y],[U,V]) :- piece(L, 0, X,Y), piece(L2, 1, U,V),L2 is L+1.
 
 aCote1([X,Y],[U,V]) :- piece(L, 7, X,Y), piece(L2, 7, U,V), L2 is L-1.
 aCote1([X,Y],[U,V]) :- piece(L, 7, X,Y), piece(L2, 7,U,V), L2 is L+1.
 aCote1([X,Y],[U,V]) :- piece(L, 7, X,Y), piece(L, 6, U,V).
-aCote1([X,Y],[U,V]) :- piece(L, 7, X,Y), piece(L2, 6, U,V), L2 is L-1.
-aCote1([X,Y],[U,V]) :- piece(L, 7, X,Y), piece(L2, 6, U,V), L2 is L+1.
+aCote2([X,Y],[U,V]) :- piece(L, 7, X,Y), piece(L2, 6, U,V), L2 is L-1.
+aCote2([X,Y],[U,V]) :- piece(L, 7, X,Y), piece(L2, 6, U,V), L2 is L+1.
 
 %cas general
 aCote1([X,Y], [U,V]) :- L>=1, C>=1, L=<6, C=<6, piece(L, C, X,Y),piece(L2, C, U,V), L2 is L+1.
 aCote1([X,Y], [U,V]) :- L>=1, C>=1, L=<6, C=<6, piece(L, C, X,Y),piece(L2, C, U,V), L2 is L-1.
 aCote1([X,Y], [U,V]) :- L>=1, C>=1, L=<6, C=<6, piece(L,C, X,Y),piece(L, C2, U,V),C2 is C-1.
 aCote1([X,Y], [U,V]) :- L>=1, C>=1, L=<6, C=<6, piece(L,C,X,Y),piece(L, C2,U,V), C2 is C+1. 
-aCote1([X,Y], [U,V]) :- L>=1, C>=1, L=<6, C=<6, piece(L,C,X,Y),piece(L2, C2,U,V), L2 is L+1, C2 is C+1.
-aCote1([X,Y], [U,V]) :- L>=1, C>=1, L=<6, C=<6, piece(L,C,X,Y),piece(L2, C2,U,V),L2 is L-1, C2 is C+1.
-aCote1([X,Y], [U,V]) :- L>=1, C>=1, L=<6, C=<6, piece(L, C, X,Y),piece(L2, C2, U,V), L2 is L-1, C2 is C-1.
-aCote1([X,Y], [U,V]) :- L>=1, C>=1, L=<6, C=<6, piece(L, C, X,Y),piece(L2, C2, U,V), L2 is L+1, C2 is C-1.
+aCote2([X,Y], [U,V]) :- L>=1, C>=1, L=<6, C=<6, piece(L,C,X,Y),piece(L2, C2,U,V), L2 is L+1, C2 is C+1.
+aCote2([X,Y], [U,V]) :- L>=1, C>=1, L=<6, C=<6, piece(L,C,X,Y),piece(L2, C2,U,V),L2 is L-1, C2 is C+1.
+aCote2([X,Y], [U,V]) :- L>=1, C>=1, L=<6, C=<6, piece(L, C, X,Y),piece(L2, C2, U,V), L2 is L-1, C2 is C-1.
+aCote2([X,Y], [U,V]) :- L>=1, C>=1, L=<6, C=<6, piece(L, C, X,Y),piece(L2, C2, U,V), L2 is L+1, C2 is C-1.
 
+%aCote2 correspond aux diago (on separe car pour push et pull on ne peut pas push ou pull une piece en diago)
 
-%autres
+%aCote ne prend pas en compte les diago (que droite, gauche, haut, bas)
 aCote([X,Y],[U,V]) :- aCote1([X,Y],[U,V]). 
 aCote([X,Y],[U,V]) :- aCote1([U,V],[X,Y]).
+
+%aCotebis prend en compte les diagonales
+aCotebis([X,Y],[U,V]) :- aCote1([X,Y],[U,V]). 
+aCotebis([X,Y],[U,V]) :- aCote1([U,V],[X,Y]).
+aCotebis([X,Y],[U,V]) :- aCote2([X,Y],[U,V]). 
+aCotebis([X,Y],[U,V]) :- aCote2([U,V],[X,Y]).
 
 
 
 %frozen
-frozen(X,W) :- aCote([X,W],[Y,Z]), inf(X,Y), piece(_,_,X,W), piece(_,_,Y,Z), W \= Z, \+ aCote([X,W],[A,W]), frozenTab(L),\+element([X,W],L).
+frozen(X,W) :- aCote([X,W],[Y,Z]), strength(X,N), strength(Y,M), N<M, piece(_,_,X,W), piece(_,_,Y,Z), W \= Z, \+ aCotebis([X,W],[A,W]).
 
 %ajout au tableau des frozen
-frozenTab([[X,Y]|L]) :- piece(_,_,X,Y), frozen(X,Y), frozenTab(L).
+frozenTab([[X,Y]|L]) :- piece(_,_,X,Y), frozen(X,Y), frozenTab(L), \+element([X,Y], L).
 
 
 %predicat trap
@@ -178,18 +185,18 @@ sens(S) :- sens(haut).
 %on peut pas bouger les out ou frozen
 %cas special des lapins qui peuvent pas aller backward
 
-%retourne la liste des 
-possMove(_,_,[]).
-possMove(rabbit,silver,[[[L,C],[L2, C]]|Res]) :-   piece(L, C,rabbit,silver), \+ board([_,[L2,C,_,_],_]), L2 is L-1, possMove(rabbit, silver, Res),!.
-possMove(rabbit,silver,[[[L,C],[L,C2]]|Res]) :- piece(L,C, rabbit,silver),  \+ board([_,[L,C2,_,_],_]), C2 is C+1, possMove(rabbit, silver, Res),!.
-possMove(rabbit,silver,[[[L,C],[L,C2]]|Res]) :- piece(L, C, rabbit,silver),  \+ board([_,[L,C2,_,_],_]), C2 is C-1, possMove(rabbit, silver, Res),!.
-possMove(rabbit,gold,[[[L,C],[L2, C]]|Res]) :- piece(L, C, rabbit,gold),  \+ board([_,[L2,C,_,_],_]), L2 is L-1,possMove(rabbit, gold, Res),!.
-possMove(rabbit,gold,[[[L,C],[L,C2]]|Res]) :- piece(L, C, rabbit,gold), \+ board([_,[L,C2,_,_],_]), C2 is C+1, possMove(rabbit, gold, Res),!.
-possMove(rabbit,gold,[[[L,C],[L,C2]]|Res]) :- piece(L, C, rabbit,gold), \+ board([_,[L,C2,_,_],_]), C2 is C-1,possMove(rabbit, gold, Res),!.
-possMove(X,Y,[[[L,C],[L2, C]]|Res]) :-  piece(L, C, X,Y), X \= rabbit , \+ board([_,[L2,C,_,_],_]), L2 is L-1, possMove(X,Y,Res),!.
-possMove(X,Y,[[[L,C],[L,C2]]|Res]) :- piece(L, C, X,Y), X \= rabbit , \+ board([_,[L,C2,_,_],_]),C2 is C+1, possMove(X,Y, Res),!.
-possMove(X,Y,[[[L,C],[L,C2]]|Res]) :- piece(L, C, X,Y), X \= rabbit , \+ board([_,[L,C2,_,_],_]),C2 is C-1, possMove(X,Y, Res),!.
-possMove(X,Y,[[[L,C],[L2,C]]|Res]) :- piece(L, C, X,Y), X \= rabbit , \+ board([_,[L2,C,_,_],_]),L2 is L+1, possMove(X,Y, Res),!. 
+%retourne la liste des mouvements possible
+possMove(_,_,[],0).
+possMove(rabbit,silver,[[[L,C],[L2, C], 1]|Res]) :-   piece(L, C,rabbit,silver), \+ board([_,[L2,C,_,_],_]), L2 is L-1, possMove(rabbit, silver, Res),!.
+possMove(rabbit,silver,[[[L,C],[L,C2], 1]|Res]) :- piece(L,C, rabbit,silver),  \+ board([_,[L,C2,_,_],_]), C2 is C+1, possMove(rabbit, silver, Res),!.
+possMove(rabbit,silver,[[[L,C],[L,C2], 1]|Res]) :- piece(L, C, rabbit,silver),  \+ board([_,[L,C2,_,_],_]), C2 is C-1, possMove(rabbit, silver, Res),!.
+possMove(rabbit,gold,[[[L,C],[L2, C], 1]|Res]) :- piece(L, C, rabbit,gold),  \+ board([_,[L2,C,_,_],_]), L2 is L-1,possMove(rabbit, gold, Res),!.
+possMove(rabbit,gold,[[[L,C],[L,C2], 1]|Res]) :- piece(L, C, rabbit,gold), \+ board([_,[L,C2,_,_],_]), C2 is C+1, possMove(rabbit, gold, Res),!.
+possMove(rabbit,gold,[[[L,C],[L,C2], 1]|Res]) :- piece(L, C, rabbit,gold), \+ board([_,[L,C2,_,_],_]), C2 is C-1,possMove(rabbit, gold, Res),!.
+possMove(X,Y,[[[L,C],[L2, C], 1]|Res]) :-  piece(L, C, X,Y), X \= rabbit , \+ board([_,[L2,C,_,_],_]), L2 is L-1, possMove(X,Y,Res),!.
+possMove(X,Y,[[[L,C],[L,C2], 1]|Res]) :- piece(L, C, X,Y), X \= rabbit , \+ board([_,[L,C2,_,_],_]),C2 is C+1, possMove(X,Y, Res),!.
+possMove(X,Y,[[[L,C],[L,C2], 1]|Res]) :- piece(L, C, X,Y), X \= rabbit , \+ board([_,[L,C2,_,_],_]),C2 is C-1, possMove(X,Y, Res),!.
+possMove(X,Y,[[[L,C],[L2,C], 1]|Res]) :- piece(L, C, X,Y), X \= rabbit , \+ board([_,[L2,C,_,_],_]),L2 is L+1, possMove(X,Y, Res),!. 
 
 % X : pièce poussant(son type), W : pièce poussée(son type), N : nombre de coup restant, (L, C) :position de la piece à pousser
 %choix du sens
@@ -210,15 +217,15 @@ possPull(X,gold,W,N,L,C) :- N>=2,piece(L, C, W,silver),piece(L2,C,X,gold),free(L
 possPull(X,gold,W,N,L,C) :- N>=2,piece(L, C, W,silver),piece(L,C2,X,gold),free(L,C3), C2 is C+1, C3 is C+2, C+2=<7,strength(W,S1), strength(X,S2), S1<S2.
 possPull(X,gold,W,N,L,C) :- N>=2,piece(L, C, W,silver),piece(L, C2, X,gold),free(L,C3), C2 is C-1, C3 is C-2, C-2>=0,strength(W,S1), strength(X,S2), S1<S2.
 
-possmove(_,_,[[[L1,C1],[L2,C2]]|S]) :- L2 is L1-1, possPull(_,_,_,_,L,C), L=:=L1+1, possmove(_,_,S),!.
-possmove(_,_,[[[L1,C1],[L2,C2]]|S]) :-L=:=L1-1,L2 is L1+1, possPull(_,_,_,_,L,C), possmove(_,_,S),!.
-possmove(_,_,[[[L1,C1],[L2,C2]]|S]):- C=:=C1+1,C2 is C1-1, possPull(_,_,_,_,L,C), possmove(_,_,S),!.
-possmove(_,_,[[[L1,C1],[L2,C2]]|S]) :- C=:=C1-1,C2 is C1+1, possPull(_,_,_,_,L,C), possmove(_,_,S),!.
+possmove(_,_,[[[L1,C1],[L2,C2],2]|S]) :- L2 is L1-1, possPull(_,_,_,_,L,C), L=:=L1+1, possmove(_,_,S),!.
+possmove(_,_,[[[L1,C1],[L2,C2],2]|S]) :-L2 is L1+1, possPull(_,_,_,_,L,C), L=:=L1-1, possmove(_,_,S),!.
+possmove(_,_,[[[L1,C1],[L2,C2],2]|S]):- C2 is C1-1, possPull(_,_,_,_,L,C), C=:=C1+1, possmove(_,_,S),!.
+possmove(_,_,[[[L1,C1],[L2,C2],2]|S]) :- C2 is C1+1, possPull(_,_,_,_,L,C), C=:=C1-1, possmove(_,_,S),!.
 
-possmove(_,_,[[[L1,C1],[L2,C2]]|S]) :- L=:=L1+1,L2 is L1+1, possPush(_,_,_,_,L,C,_), possmove(_,_,S),!.
-possmove(_,_,[[[L1,C1],[L2,C2]]|S]) :- L=:=L1-1,L2 is L1-1, possPush(_,_,_,_,L,C,_), possmove(_,_,S),!.
-possmove(_,_,[[[L1,C1],[L2,C2]]|S]) :- C=:=C1+1,C2 is C1+1, possPush(_,_,_,_,L,C,_), possmove(_,_,S),!.
-possmove(_,_,[[[L1,C1],[L2,C2]]|S]) :- C=:=C1-1,C2 is C1-1, possPush(_,_,_,_,L,C,_), possmove(_,_,S), !.
+possmove(_,_,[[[L1,C1],[L2,C2],2]|S]) :- L2 is L1+1, possPush(_,_,_,_,L,C,_), L=:=L1+1, possmove(_,_,S),!.
+possmove(_,_,[[[L1,C1],[L2,C2],2]|S]) :- L2 is L1-1, possPush(_,_,_,_,L,C,_), L=:=L1-1, possmove(_,_,S),!.
+possmove(_,_,[[[L1,C1],[L2,C2],2]|S]) :- C2 is C1+1, possPush(_,_,_,_,L,C,_), C=:=C1+1,possmove(_,_,S),!.
+possmove(_,_,[[[L1,C1],[L2,C2],2]|S]) :- C2 is C1-1, possPush(_,_,_,_,L,C,_), C=:=C1-1, possmove(_,_,S), !.
 
 
 
@@ -265,23 +272,35 @@ inserer([X|L]):- asserta(X), inserer(L).
 long([], 0).
 long([_|Q], N) :- long(Q, N1), N is N1 + 1.
 
-%predicat moves on ajoute un move au tableau :
-moves([_,_,_,_]):- !.
-moves([[[L1,C1],[L2,C2]]|L]) :- retractall(piece(_)), inserer(Board), move([L1,C1],[L2,C2]), long(L, N), N=<3, moves(L).
+%predicat ajouter dans une liste 
+add(E,L,[E|L]).
+
+%predicat retirer dune liste
+retirer(E, [E|Q], Q).
+retirer(E,[T|Q], [T|R]):- retirer(E,Q,R).
+
+%predicat remplacer element 1 par elem2 dans une liste
+remplacer(A,B,L,L2) :- add(A,L,L1), retirer(B,L1,L2)
+
+%prendre en compte que posspush ou possmove choisi implique 2 steps en moins
+%jai rajouté lattribut qui dit nombre de steps déjà fait 
+%predicat où on ajoute un mouvement à la liste 
+moves([], 0):- !.
+moves([[[L1,C1],[L2,C2]]|L], NStepts2) :- retractall(piece(_)), inserer(Board), move([L1,C1],[L2,C2], N), remplacer([L1,C1], [L2,C2], Board, NewBoard), (NSteps+N)=<4, NSteps2 is NSteps + N, (M+N)=<4, moves(L, NSteps).
 
 
 %predicat get_moves
-get_moves(M, Gamestate, Board) :-   moves(M).
+get_moves(M, Gamestate, Board) :- moves(M).
 
 
 %predicat move
 %faire un predicat choix pour que le joueur choisisse parmi les possmove et les possPull/possPush et no_move ?
 %on est obligé de faire au moins un mouvement
-move([L1,C1],[L2,C2]):- possMove(_,_,[[[L1,C1],[L2,C2]]|Res]), !.
+move([L1,C1],[L2,C2],N):- possMove(_,_,[[[L1,C1],[L2,C2]]|Res], N), !.
 
 
 
-piece(L2,C2,_,_) :- move([L1,C1],[L2,C2]), piece(L1,C1,_,_). 
+piece(L2,C2,_,_) :- move([L1,C1],[L2,C2], N), piece(L1,C1,_,_). 
 
 
 
