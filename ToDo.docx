@@ -26,6 +26,7 @@ https://en.wikibooks.org/wiki/Arimaa/Introduction_to_Strategy
 Algo minimax :
 http://www.emse.fr/~picard/cours/ai/minimax/
 
+- Je pense que notre possibleMove n'est pas bon, et qu'il faut s'inspirer du possibleMove ici : https://github.com/vincebhx/IA02-Khan/blob/master/moves/legalMoves.pl
 - Modifier le code pour que on prenne en compte que un possPush ou un possPull implique 2 steps, alors que un autre possMove basique n'en implique que un   //FAIT
 - implémenter NewBoard qui change la position d'une piece dans Board après le choix du premier élément de moves ?
     -->Quand c'est un possPush/possMove, aussi modifier la position de la piece adverse qui est push/pull
