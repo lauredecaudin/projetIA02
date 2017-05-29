@@ -14,9 +14,10 @@
 - Implémenter Board //C   OK
 - Implémenter frozen  //L OK
 
-- Implémenter le choix libre de placement des pièces au début
-- Faire en sorte que les pieces out soient ejectées du jeu   //voir ce que j'ai fait
 
+
+
+Nouvelle TO DO (Edit le 29 mai)
 
 -Chercher une stratégie de jeu :
 https://boardgamegeek.com/thread/110510/arimaa-well-its-way-becoming-classic
@@ -25,9 +26,19 @@ https://en.wikibooks.org/wiki/Arimaa/Introduction_to_Strategy
 Algo minimax :
 http://www.emse.fr/~picard/cours/ai/minimax/
 
-- Modifier le code pour que on prenne en compte que un possPush ou un possPull implique 2 steps, alors que un autre possMove basique n'en implique que un
+- Modifier le code pour que on prenne en compte que un possPush ou un possPull implique 2 steps, alors que un autre possMove basique n'en implique que un   //FAIT
 - implémenter NewBoard qui change la position d'une piece dans Board après le choix du premier élément de moves ?
-- Comment faire notre min-max ? Sachant que d'un tour à l'autre il faut évaluer comment va jouer le joueur adverse
+    -->Quand c'est un possPush/possMove, aussi modifier la position de la piece adverse qui est push/pull
 - supprimer tous les endroits où on a implémenté le code pour l'humain ?
 - Faire les prédicats et algo de décision 
   --> win(L, C, silver, Board) :- piece(_,_,rabbit,silver), L=:=7, possMove().  //un des lapins silver a atteint la dernière ligne (camp adverse)
+  
+ - Comment faire notre min-max ? Sachant que d'un tour à l'autre il faut évaluer comment va jouer le joueur adverse  //pas sûr que ce soit nécessaire de se faire autant chier en fait
+ //peut être qu'il suffit de faire une liste de mouvements stratégiques ordonnés par ordre croissants, et au pire on bouge notre lapin le plus avancé qui ne risque pas d'être frozen direct après notre mvmt
+ - Stratégie pour choisir mvmt (par ordre de priorité):
+    Si un lapin en avant dernière ligne : le faire avancer
+    Si un lapin adverse proche de notre zone (2 lignes avant), le frozen
+    Si un piece adverse à côté d'un trap et qu'on peut la mettre dedans, ben on la met dedans
+    //à completer
+ 
+ 
