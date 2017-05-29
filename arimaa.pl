@@ -200,32 +200,32 @@ possMove(X,Y,[[[L,C],[L2,C], 1]|Res]) :- piece(L, C, X,Y), X \= rabbit , \+ boar
 
 % X : pièce poussant(son type), W : pièce poussée(son type), N : nombre de coup restant, (L, C) :position de la piece à pousser
 %choix du sens
-possPush(X,silver,W,N,L,C,S) :- !,N>=2, (L+1)=<7,  free(L2,C), L2 is L+1,sens(bas), piece(L, C, W,gold,L,C,in),aCote(X,W), strength(W,S1), strength(X,S2), S1<S2.
-possPush(X,silver,W,N,L,C,S) :-!, N>=2, (C+1)=<7,  free(L,C2), C2 is C+1,sens(droite), piece(L, C, W, gold),aCote(X,W), strength(W,S1), strength(X,S2), S1<S2.
-possPush(X,silver,W,N,L,C,S) :-!, N>=2,(C-1)>=0,  free(L,C2), C2 is C-1,sens(gauche),  piece(L, C, W, gold),aCote(X,W),strength(W,S1), strength(X,S2), S1<S2.
-possPush(X,silver,W,N,L,C,S) :- !,N>=2, (L-1)>=0,  free(L2,C), L2 is L-1,sens(haut),  piece(L, C, W, gold),aCote(X,W),strength(W,S1), strength(X,S2), S1<S2.
+possPush(X,silver,W,L,C) :- !, (L+1)=<7,  free(L2,C), L2 is L+1,sens(bas), piece(L, C, W,gold,L,C,in),aCote(X,W), strength(W,S1), strength(X,S2), S1<S2.
+possPush(X,silver,W,L,C) :-!,  (C+1)=<7,  free(L,C2), C2 is C+1,sens(droite), piece(L, C, W, gold),aCote(X,W), strength(W,S1), strength(X,S2), S1<S2.
+possPush(X,silver,W,L,C) :-!, (C-1)>=0,  free(L,C2), C2 is C-1,sens(gauche),  piece(L, C, W, gold),aCote(X,W),strength(W,S1), strength(X,S2), S1<S2.
+possPush(X,silver,W,L,C) :- !, (L-1)>=0,  free(L2,C), L2 is L-1,sens(haut),  piece(L, C, W, gold),aCote(X,W),strength(W,S1), strength(X,S2), S1<S2.
 
 %Retourne lensemble des mouvements par Push possibles
-possPush(X,gold,W,N,L,C,S) :-!, N>=2, (L+1)=<7,  free(L2,C), L2 is L+1,sens(bas), piece(L, C, W, silver),aCote(X,W),strength(W,S1), strength(X,S2), S1<S2.
-possPush(X,gold,W,N,L,C,S) :-!, N>=2, (C+1)=<7,  free(L,C2), C2 is C+1,sens(droite) ,piece(L, C, W, silver),aCote(X,W),strength(W,S1), strength(X,S2), S1<S2.
-possPush(X,gold,W,N,L,C,S) :-!, N>=2, (C-1)>=0,  free(L,C2), C2 is C-1,sens(gauche)  ,piece(L, C, W, silver),aCote(X,W),strength(W,S1), strength(X,S2), S1<S2.
-possPush(X,gold,W,N,L,C,S) :- !,N>=2, (L-1)>=0,  free(L2,C), L2 is L-1, sens(haut), piece(L, C, W, silver),aCote(X,W),strength(W,S1), strength(X,S2), S1<S2.
+possPush(X,gold,W,L,C) :-!,  (L+1)=<7,  free(L2,C), L2 is L+1,sens(bas), piece(L, C, W, silver), aCote(X,W),strength(W,S1), strength(X,S2), S1<S2.
+possPush(X,gold,W,L,C) :-!,  (C+1)=<7,  free(L,C2), C2 is C+1,sens(droite) ,piece(L, C, W, silver), aCote(X,W),strength(W,S1), strength(X,S2), S1<S2.
+possPush(X,gold,W,L,C) :-!,  (C-1)>=0,  free(L,C2), C2 is C-1,sens(gauche)  ,piece(L, C, W, silver), aCote(X,W),strength(W,S1), strength(X,S2), S1<S2.
+possPush(X,gold,W,L,C) :- !, (L-1)>=0,  free(L2,C), L2 is L-1, sens(haut), piece(L, C, W, silver), aCote(X,W),strength(W,S1), strength(X,S2), S1<S2.
 
 %Retourne lensemble des mouvements par pull possibles
-possPull(X,silver,W,N,L,C) :- N>=2,piece(L, C, W,gold),piece(L2,C,X,silver),free(L3,C), L2 is L-1, L3 is L-2, L-2>=0,strength(W,S1), strength(X,S2), S1<S2. 
-possPull(X,gold,W,N,L,C) :- N>=2,piece(L, C, W,silver),piece(L2,C,X,gold),free(L3,C), L2 is L+1, L3 is L+2, L+2=<7,strength(W,S1), strength(X,S2), S1<S2.
-possPull(X,gold,W,N,L,C) :- N>=2,piece(L, C, W,silver),piece(L,C2,X,gold),free(L,C3), C2 is C+1, C3 is C+2, C+2=<7,strength(W,S1), strength(X,S2), S1<S2.
-possPull(X,gold,W,N,L,C) :- N>=2,piece(L, C, W,silver),piece(L, C2, X,gold),free(L,C3), C2 is C-1, C3 is C-2, C-2>=0,strength(W,S1), strength(X,S2), S1<S2.
+possPull(X,silver,W,L,C) :- piece(L, C, W,gold),piece(L2,C,X,silver),free(L3,C), L2 is L-1, L3 is L-2, L-2>=0,strength(W,S1), strength(X,S2), S1<S2. 
+possPull(X,gold,W,L,C) :- piece(L, C, W,silver),piece(L2,C,X,gold),free(L3,C), L2 is L+1, L3 is L+2, L+2=<7,strength(W,S1), strength(X,S2), S1<S2.
+possPull(X,gold,W,L,C) :- piece(L, C, W,silver),piece(L,C2,X,gold),free(L,C3), C2 is C+1, C3 is C+2, C+2=<7,strength(W,S1), strength(X,S2), S1<S2.
+possPull(X,gold,W,L,C) :- piece(L, C, W,silver),piece(L, C2, X,gold),free(L,C3), C2 is C-1, C3 is C-2, C-2>=0,strength(W,S1), strength(X,S2), S1<S2.
 
-possmove(_,_,[[[L1,C1],[L2,C2],2]|S]) :- L2 is L1-1, possPull(_,_,_,_,L,C), L=:=L1+1, possmove(_,_,S),!.
-possmove(_,_,[[[L1,C1],[L2,C2],2]|S]) :-L2 is L1+1, possPull(_,_,_,_,L,C), L=:=L1-1, possmove(_,_,S),!.
-possmove(_,_,[[[L1,C1],[L2,C2],2]|S]):- C2 is C1-1, possPull(_,_,_,_,L,C), C=:=C1+1, possmove(_,_,S),!.
-possmove(_,_,[[[L1,C1],[L2,C2],2]|S]) :- C2 is C1+1, possPull(_,_,_,_,L,C), C=:=C1-1, possmove(_,_,S),!.
+possmove(_,_,[[[L1,C1],[L2,C2],2]|S]) :- L2 is L1-1, possPull(_,_,_,L,C), L=:=L1+1, possmove(_,_,S),!.
+possmove(_,_,[[[L1,C1],[L2,C2],2]|S]) :-L2 is L1+1, possPull(_,_,_,L,C), L=:=L1-1, possmove(_,_,S),!.
+possmove(_,_,[[[L1,C1],[L2,C2],2]|S]):- C2 is C1-1, possPull(_,_,_,L,C), C=:=C1+1, possmove(_,_,S),!.
+possmove(_,_,[[[L1,C1],[L2,C2],2]|S]) :- C2 is C1+1, possPull(_,_,_,L,C), C=:=C1-1, possmove(_,_,S),!.
 
-possmove(_,_,[[[L1,C1],[L2,C2],2]|S]) :- L2 is L1+1, possPush(_,_,_,_,L,C,_), L=:=L1+1, possmove(_,_,S),!.
-possmove(_,_,[[[L1,C1],[L2,C2],2]|S]) :- L2 is L1-1, possPush(_,_,_,_,L,C,_), L=:=L1-1, possmove(_,_,S),!.
-possmove(_,_,[[[L1,C1],[L2,C2],2]|S]) :- C2 is C1+1, possPush(_,_,_,_,L,C,_), C=:=C1+1,possmove(_,_,S),!.
-possmove(_,_,[[[L1,C1],[L2,C2],2]|S]) :- C2 is C1-1, possPush(_,_,_,_,L,C,_), C=:=C1-1, possmove(_,_,S), !.
+possmove(_,_,[[[L1,C1],[L2,C2],2]|S]) :- L2 is L1+1, possPush(_,_,_,L,C), L=:=L1+1, possmove(_,_,S),!.
+possmove(_,_,[[[L1,C1],[L2,C2],2]|S]) :- L2 is L1-1, possPush(_,_,_,L,C), L=:=L1-1, possmove(_,_,S),!.
+possmove(_,_,[[[L1,C1],[L2,C2],2]|S]) :- C2 is C1+1, possPush(_,_,_,L,C), C=:=C1+1,possmove(_,_,S),!.
+possmove(_,_,[[[L1,C1],[L2,C2],2]|S]) :- C2 is C1-1, possPush(_,_,_,L,C), C=:=C1-1, possmove(_,_,S), !.
 
 
 
@@ -261,7 +261,10 @@ possmove(_,_,[[[L1,C1],[L2,C2],2]|S]) :- C2 is C1-1, possPush(_,_,_,_,L,C,_), C=
 %piece(W,silver,L2,C,_) :- possPull(X,gold,W,N,L,C), L2 is L+1. 
 %piece(X,gold,L2,C,_) :- possPull(X,gold,W,N,L,C), L2 is L+2. 
 
-
+%predicat move
+%faire un predicat choix pour que le joueur choisisse parmi les possmove et les possPull/possPush et no_move ?
+%on est obligé de faire au moins un mouvement
+move([L1,C1],[L2,C2],N) :- possMove(_,_,[[[L1,C1],[L2,C2]]|Res], N), !.
 
 
 %predicat formation base de données 
@@ -269,8 +272,8 @@ inserer([]).
 inserer([X|L]):- asserta(X), inserer(L). 
 
 %predicat pour avoir la taille dune liste
-long([], 0).
-long([_|Q], N) :- long(Q, N1), N is N1 + 1.
+%long([], 0).
+%long([_|Q], N) :- long(Q, N1), N is N1 + 1.
 
 %predicat ajouter dans une liste 
 add(E,L,[E|L]).
@@ -283,20 +286,18 @@ retirer(E,[T|Q], [T|R]):- retirer(E,Q,R).
 remplacer(A,B,L,L2) :- add(A,L,L1), retirer(B,L1,L2).
 
 %prendre en compte que posspush ou possmove choisi implique 2 steps en moins
-%jai rajouté lattribut qui dit nombre de steps déjà fait 
+%jai rajouté lattribut qui dit nombre de steps déjà fait
+%on part de Board et on arrive à NewBoard 
 %predicat où on ajoute un mouvement à la liste 
-moves([], 0, [_]):- !.
-moves([[[L1,C1],[L2,C2]]|L], NStepts2, NewBoard) :- move([L1,C1],[L2,C2], N), element([L1,C1,A,B], Board), remplacer([L1,C1,A,B], [L2,C2,A,B], Board, NewBoard), (NSteps+N)=<4, NSteps2 is NSteps + N, moves(L, NSteps, Board).
+moves([], 0, [_],[_]):- !.
+moves([[[L1,C1],[L2,C2]]|L], NStepts2, Board, NewBoard) :- retractall(piece(X)), inserer(Board), move([L1,C1],[L2,C2], N), element([L1,C1,A,B], Board), remplacer([L1,C1,A,B], [L2,C2,A,B], Board, NewBoard), (NSteps+N)=<4, NSteps2 is (NSteps + N), moves(L, NSteps,_, Board).
 
 
-%predicat get_moves
-get_moves(M, Gamestate, Board) :- moves(M, NSteps, Board), retractall(piece(_)), inserer(Board).
+%predicat get_moves 
+
+get_moves(M, Gamestate, Board) :- moves(M, NSteps,Board,[]).
 
 
-%predicat move
-%faire un predicat choix pour que le joueur choisisse parmi les possmove et les possPull/possPush et no_move ?
-%on est obligé de faire au moins un mouvement
-move([L1,C1],[L2,C2],N) :- possMove(_,_,[[[L1,C1],[L2,C2]]|Res], N), !.
 
 
 
