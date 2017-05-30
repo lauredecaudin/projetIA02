@@ -1,0 +1,47 @@
+- Inférieur : FAIT  
+--> plutôt implémenter strenght ? (rabbit=1, cat=2...)  //FAIT
+- implementer type(rabbit, cat, dog, horse, camel, elephant)  //FAIT
+- Implémenter le prédicat Trap (2,2)(2,6)(6,2)(6,6)  //FAIT
+- implémenter side(gold, silver)  //FAIT
+- Implémenter Gamestate  //FAIT ?
+- Autoriser entre 1 et 4 mouvements //FAIT AVEC remainSteps
+
+- Implémenter Get_moves(Moves, gamestate, board) //C  OK
+- implémenter Move, faire attention à limiter le nb à 4 et à permettre que les mouvements possibles (celui d'en dessous)  //L je vois pas ce qui faut faire de +
+- implementer un predicat qui donne pour une piece en jeu ses différents mouvements possibles
+(en fonction de son type, des autres pièces du jeu, de si elle est frozen ou pas, etc)  //C   OK
+- implémenter push/pull ? //L  OK
+- Implémenter Board //C   OK
+- Implémenter frozen  //L OK
+
+
+
+
+Nouvelle TO DO (Edit le 29 mai)
+
+-Chercher une stratégie de jeu :
+https://boardgamegeek.com/thread/110510/arimaa-well-its-way-becoming-classic
+https://en.wikibooks.org/wiki/Arimaa/Introduction_to_Strategy
+
+Algo minimax :
+http://www.emse.fr/~picard/cours/ai/minimax/
+
+- Je pense que notre possibleMove n'est pas bon, et qu'il faut s'inspirer du possibleMove ici : https://github.com/vincebhx/IA02-Khan/blob/master/moves/legalMoves.pl
+- Modifier le code pour que on prenne en compte que un possPush ou un possPull implique 2 steps, alors que un autre possMove basique n'en implique que un   //FAIT
+- implémenter NewBoard qui change la position d'une piece dans Board après le choix du premier élément de moves ?
+    -->Quand c'est un possPush/possMove, aussi modifier la position de la piece adverse qui est push/pull
+- supprimer tous les endroits où on a implémenté le code pour l'humain ?
+- Faire les prédicats et algo de décision //pas sure que ce soit necessaire
+  --> win(L, C, silver, Board) :- piece(_,_,rabbit,silver), L=:=7, possMove().  //un des lapins silver a atteint la dernière ligne (camp adverse)
+  
+ - Comment faire notre min-max ? Sachant que d'un tour à l'autre il faut évaluer comment va jouer le joueur adverse  //pas sûr que ce soit nécessaire de se faire autant chier en fait
+ //peut être qu'il suffit de faire une liste de mouvements stratégiques ordonnés par ordre croissants, et au pire on bouge notre lapin le plus avancé qui ne risque pas d'être frozen direct après notre mvmt
+ - Stratégie pour choisir mvmt (par ordre de priorité):
+    Si un lapin en avant dernière ligne : le faire avancer
+    Si un lapin adverse proche de notre zone (2 lignes avant), le frozen ou le push/pull dans la bonne direction
+    Si une piece adverse à côté d'un trap et qu'on peut la mettre dedans, ben on la met dedans
+    Si un lapin assez avancé n'a pas de grosse pièce proche pour le protéger, en mettre une à côté de lui.
+    Avancer un éléphant à côté d'un trap du côté adverse (afin d'empêcher n'importe laquelle de nos pièces d'être mise dans un trap là bas
+    //à completer
+ 
+ 
