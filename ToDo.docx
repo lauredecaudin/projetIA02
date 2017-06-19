@@ -37,11 +37,11 @@ http://www.emse.fr/~picard/cours/ai/minimax/
  - Comment faire notre min-max ? Sachant que d'un tour à l'autre il faut évaluer comment va jouer le joueur adverse  //pas sûr que ce soit nécessaire de se faire autant chier en fait
  //peut être qu'il suffit de faire une liste de mouvements stratégiques ordonnés par ordre croissants, et au pire on bouge notre lapin le plus avancé qui ne risque pas d'être frozen direct après notre mvmt
  - Stratégie pour choisir mvmt (par ordre de priorité):
-    Si un lapin en avant dernière ligne : le faire avancer
-    Si un lapin adverse proche de notre zone (2 lignes avant), le frozen ou le push/pull dans la bonne direction
-    Si une piece adverse à côté d'un trap et qu'on peut la mettre dedans, ben on la met dedans
-    Si un lapin assez avancé n'a pas de grosse pièce proche pour le protéger, en mettre une à côté de lui.
-    Avancer un éléphant à côté d'un trap du côté adverse (afin d'empêcher n'importe laquelle de nos pièces d'être mise dans un trap là bas
+    Si un lapin en avant dernière ligne : le faire avancer  //DONE
+    Si un lapin adverse proche de notre zone (2 lignes avant), le frozen ou le push/pull dans la bonne direction  //DONE
+    Si une piece adverse à côté d'un trap et qu'on peut la mettre dedans, ben on la met dedans  //ON A PAS PUSH ET PULL
+    Si un lapin assez avancé n'a pas de grosse pièce proche pour le protéger, en mettre une à côté de lui.  //DONE
+    Avancer un éléphant à côté d'un trap du côté adverse (afin d'empêcher n'importe laquelle de nos pièces d'être mise dans un trap là bas) //DONE
     //à completer
  
  
