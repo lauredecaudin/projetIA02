@@ -189,6 +189,18 @@ choose([[L1,C1],[L1,C2]], Board) :- moves(S, Board), element([[L1,C1],[L1,C2]], 
 choose([[L1,C1],[L2,C1]], Board) :- moves(S, Board), element([[L1,C1],[L2,C1]], S),piece(L1,C1,rabbit, silver), L2=:=L1+1, L3 is L2+1, piece(L3,C1,_,silver).
 choose([[L1,C1],[L2,C1]], Board) :- moves(S, Board), element([[L1,C1],[L2,C1]], S),piece(L1,C1,rabbit, silver), L2=:=L1+1, L3 is L2+1, \+piece(L3,C1,T,gold), T\=rabbit.
 
+
+%avancer un elephant vers les traps du côté adverse
+%on est proche dun trap donc on se met a cote
+choose([[4,1],[5,1]], Board) :- moves(S, Board), element([[4,1],[5,1]], S),piece(4,1,elephant, silver).
+choose([[4,3],[5,3]], Board) :- moves(S, Board), element([[4,3],[5,3]], S),piece(4,3,elephant, silver).
+choose([[4,4],[5,4]], Board) :- moves(S, Board), element([[4,4],[5,4]], S),piece(4,4,elephant, silver).
+choose([[4,6],[5,6]], Board) :- moves(S, Board), element([[4,6],[5,6]], S),piece(4,6,elephant, silver).
+
+%on avance lelephant si il est sur une des colonnes pratiques (1,2,3,4,5,6) pour atteindre les traps, mais on ne lavance plus une fois quil est a cote dun trap
+choose([[L1,C1],[L2,C1]], Board) :- moves(S, Board), element([[L1,C1],[L2,C1]], S), C1\=1, C1\=7, L1<5, piece(L1,C1,elephant, silver), L2=:=L1+1.
+
+
 %choisir mouvement quelconque
 choose([[L1,C1],[L2,C1]], Board) :- moves(S, Board), element([[L1,C1],[L2,C1]], S), L2=:=L1+1, piece(L1,C1,A, silver), L3 is L2+1, \+piece(L3,C1,T,gold), strength(A,S1), strength(T,S2), S1<S2.
 
@@ -200,5 +212,3 @@ choose4([A|M],Board,N) :-  retractall(piece(_)), inserer(Board), N1 is N+1, choo
 get_moves([A,B,C,D], Gamestate, Board) :-  choose4([A,B,C,D|_],Board,0).
 
 consult(arimaa.pl).
-
-
