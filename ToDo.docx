@@ -19,14 +19,10 @@
 
 Nouvelle TO DO (Edit le 29 mai)
 
--Chercher une stratégie de jeu :
-https://boardgamegeek.com/thread/110510/arimaa-well-its-way-becoming-classic
-https://en.wikibooks.org/wiki/Arimaa/Introduction_to_Strategy
 
 Algo minimax :
 http://www.emse.fr/~picard/cours/ai/minimax/
-
-- Je pense que notre possibleMove n'est pas bon, et qu'il faut s'inspirer du possibleMove ici : https://github.com/vincebhx/IA02-Khan/blob/master/moves/legalMoves.pl
+ 
 - Modifier le code pour que on prenne en compte que un possPush ou un possPull implique 2 steps, alors que un autre possMove basique n'en implique que un   //FAIT
 - implémenter NewBoard qui change la position d'une piece dans Board après le choix du premier élément de moves ?
     -->Quand c'est un possPush/possMove, aussi modifier la position de la piece adverse qui est push/pull
@@ -42,6 +38,6 @@ http://www.emse.fr/~picard/cours/ai/minimax/
     Si une piece adverse à côté d'un trap et qu'on peut la mettre dedans, ben on la met dedans  //ON A PAS PUSH ET PULL
     Si un lapin assez avancé n'a pas de grosse pièce proche pour le protéger, en mettre une à côté de lui.  //DONE
     Avancer un éléphant à côté d'un trap du côté adverse (afin d'empêcher n'importe laquelle de nos pièces d'être mise dans un trap là bas) //DONE
-    //à completer
+
  
  
